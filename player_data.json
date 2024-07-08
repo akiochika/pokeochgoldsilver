@@ -131,33 +131,34 @@
         "exp": 22,
         "team": [
             {
-                "name": "新弥",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png",
+                "name": "マグマラシ",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/156.png",
                 "base_stats": {
-                    "HP": 39,
-                    "攻撃": 52,
-                    "防御": 43,
-                    "特攻": 60,
-                    "特防": 50,
-                    "素早さ": 65
+                    "HP": 58,
+                    "攻撃": 64,
+                    "防御": 58,
+                    "特攻": 80,
+                    "特防": 65,
+                    "素早さ": 80
                 },
-                "rarity": 1,
-                "evolve_level": 14,
-                "evolves_to": "マグマラシ",
+                "rarity": 2,
+                "evolve_level": 36,
+                "evolves_to": "バクフーン",
                 "appear": 1,
                 "moves": [
-                    "たいあたり"
+                    "かえんほうしゃ",
+                    "ころがる"
                 ],
                 "shiny": false,
-                "level": 13,
-                "exp": 74,
-                "hp": 33,
-                "attack": 18,
-                "defense": 16,
-                "special_attack": 20,
-                "special_defense": 18,
-                "speed": 21,
-                "max_hp": 33
+                "level": 14,
+                "exp": 21,
+                "hp": 40,
+                "attack": 22,
+                "defense": 21,
+                "special_attack": 27,
+                "special_defense": 23,
+                "speed": 27,
+                "max_hp": 40
             }
         ],
         "box": [],
