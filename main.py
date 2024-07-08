@@ -560,6 +560,7 @@ def clean_channel_data(data):
     cleaned_data = {}
     for channel_id, channel_info in data.items():
         cleaned_channel_info = channel_info.copy()
+        cleaned_channel_info["user_ids"] = list(cleaned_channel_info["user_ids"])  # Convert set to list
         cleaned_channel_info["current_pokemon"] = cleaned_channel_info["current_pokemon"].copy()
         if "message" in cleaned_channel_info["current_pokemon"]:
             del cleaned_channel_info["current_pokemon"]["message"]
