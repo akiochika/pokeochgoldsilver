@@ -149,15 +149,15 @@
                     "たいあたり"
                 ],
                 "shiny": false,
-                "level": 11,
-                "exp": 212,
-                "hp": 24,
-                "attack": 16,
-                "defense": 14,
-                "special_attack": 18,
-                "special_defense": 16,
-                "speed": 19,
-                "max_hp": 29
+                "level": 12,
+                "exp": 74,
+                "hp": 31,
+                "attack": 17,
+                "defense": 15,
+                "special_attack": 19,
+                "special_defense": 17,
+                "speed": 20,
+                "max_hp": 31
             }
         ],
         "box": [],
