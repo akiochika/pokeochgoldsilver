@@ -366,7 +366,7 @@ def github_write_file(content, file_path, message):
         print('Failed to update file:', response.json())
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-REPO_NAME = "akiokichika/pokeochgoldsilver"
+REPO_NAME = "akiochika/pokeochgoldsilver"
 PLAYER_DATA_FILE_PATH = "player_data.json"
 CAUGHT_POKEMONS_FILE_PATH = "caught_pokemons.json"
 
