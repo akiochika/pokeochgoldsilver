@@ -363,14 +363,39 @@ def github_write_file(content, file_path, message):
     else:
         print('Failed to update file:', response.json())
 
-# GitHubリポジトリ情報
-GITHUB_REPO = 'your-username/your-repo'
-GITHUB_BRANCH = 'main'
-PLAYER_DATA_FILE_PATH = 'path/to/player_data.json'
-CAUGHT_POKEMONS_FILE_PATH = 'path/to/caught_pokemons.json'
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+REPO_NAME = "akiokichika/pokeochgoldsilver"
+PLAYER_DATA_FILE_PATH = "player_data.json"
+CAUGHT_POKEMONS_FILE_PATH = "caught_pokemons.json"
 
-# GitHubトークン
-GITHUB_TOKEN = 'your_github_token'
+def get_file_sha(file_path):
+    url = f"https://api.github.com/repos/{REPO_NAME}/contents/{file_path}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()["sha"]
+    return None
+
+def update_github_file(file_path, content):
+    url = f"https://api.github.com/repos/{REPO_NAME}/contents/{file_path}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    file_sha = get_file_sha(file_path)
+    data = {
+        "message": f"Update {file_path}",
+        "content": base64.b64encode(content.encode()).decode(),
+        "sha": file_sha
+    }
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code == 200:
+        print(f"Successfully updated {file_path} on GitHub")
+    else:
+        print(f"Failed to update {file_path} on GitHub: {response.content}")
 
 def save_player_data():
     # `Message` オブジェクトを削除
@@ -385,18 +410,20 @@ def save_player_data():
             if "message" in pokemon:
                 del pokemon["message"]
 
-    player_data_content = json.dumps(player_data, ensure_ascii=False, indent=4)
-    caught_pokemons_content = json.dumps(caught_pokemons, ensure_ascii=False, indent=4)
-
+    player_data_json = json.dumps(player_data, ensure_ascii=False, indent=4)
     with open(player_data_file, 'w') as file:
-        file.write(player_data_content)
+        file.write(player_data_json)
+    
+    # GitHubにアップデート
+    update_github_file(PLAYER_DATA_FILE_PATH, player_data_json)
 
+def save_caught_pokemons():
+    caught_pokemons_json = json.dumps(caught_pokemons, ensure_ascii=False, indent=4)
     with open(data_file, 'w') as file:
-        file.write(caught_pokemons_content)
-
-    # GitHubにデータを書き込み
-    github_write_file(player_data_content, PLAYER_DATA_FILE_PATH, 'Update player data')
-    github_write_file(caught_pokemons_content, CAUGHT_POKEMONS_FILE_PATH, 'Update caught pokemons')
+        file.write(caught_pokemons_json)
+    
+    # GitHubにアップデート
+    update_github_file(CAUGHT_POKEMONS_FILE_PATH, caught_pokemons_json)
 
 # ポケモンリストの表示
 # ページ情報を保持するための辞書
