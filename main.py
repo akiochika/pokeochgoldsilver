@@ -393,7 +393,7 @@ def get_file_sha(file_path):
         return None
 
 def update_github_file(file_path, content):
-    try {
+    try:
         url = f"https://api.github.com/repos/{REPO_NAME}/contents/{file_path}"
         headers = {
             "Authorization": f"token {GITHUB_TOKEN}",
@@ -405,7 +405,7 @@ def update_github_file(file_path, content):
             "content": base64.b64encode(content.encode()).decode(),
             "sha": file_sha
         }
-        response = requests.put(url, headers=headers, json=data)
+        response = requests.put(url, headers=headers, json(data))
         if response.status_code == 200:
             print(f"Successfully updated {file_path} on GitHub")
         else:
@@ -619,7 +619,7 @@ async def withdraw(ctx, pokemon_name: str):
         save_player_data()
         await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスから引き出しました。")
     except Exception as e:
-        logging.error(f"Error in withdraw command: {e}", exc_info=True)
+        logging.error(f"Error in withdraw command: {e}", excinfo=True)
 
 async def heal_pokemon_in_box(user_id, pokemon):
     try:
