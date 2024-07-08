@@ -158,7 +158,7 @@ async def on_message(message):
         user_id = str(message.author.id)
 
         if channel_id not in channel_data:
-            channel_data[channel_id] = {"message_count": 0, "current_pokemon": None, "wild_pokemon_escape_task": None, "user_ids": [], "field_pokemons": {}}
+            channel_data[channel_id] = {"message_count": 0, "current_pokemon": None, "wild_pokemon_escape_task": None, "wild_pokemon_attack_task": None, "user_ids": [], "field_pokemons": {}}
 
         channel_info = channel_data[channel_id]
         if user_id not in channel_info["user_ids"]:
@@ -295,6 +295,7 @@ async def wild_pokemon_attack(channel):
                 channel_info["field_pokemons"][target_user_id].remove(target_pokemon)
                 player_data[target_user_id]["team"].append(target_pokemon)
                 save_player_data()
+                save_field_data()
     except Exception as e:
         logging.error(f"Error in wild_pokemon_attack: {e}", exc_info=True)
 
@@ -791,7 +792,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
             hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
 
             if channel_info["current_pokemon"]["hp"] == 0:
-                if "message" in channel_info["current_pokemon"] and channel_info["current_pokemon"]["message"]:
+                if channel_info["current_pokemon"].get("message"):
                     try:
                         await channel_info["current_pokemon"]["message"].delete()
                     except discord.errors.NotFound:
@@ -805,7 +806,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
                 save_player_data()
                 save_field_data()
             else:
-                if "message" in channel_info["current_pokemon"] and channel_info["current_pokemon"]["message"]:
+                if channel_info["current_pokemon"].get("message"):
                     try:
                         await channel_info["current_pokemon"]["message"].delete()
                     except discord.errors.NotFound:
