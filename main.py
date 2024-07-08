@@ -550,6 +550,42 @@ async def box_back(ctx):
     except Exception as e:
         logging.error(f"Error in box_back command: {e}", exc_info=True)
 
+def clean_channel_data(data):
+    cleaned_data = {}
+    for channel_id, channel_info in data.items():
+        cleaned_channel_info = channel_info.copy()
+        cleaned_channel_info["current_pokemon"] = cleaned_channel_info["current_pokemon"].copy()
+        if "message" in cleaned_channel_info["current_pokemon"]:
+            del cleaned_channel_info["current_pokemon"]["message"]
+        if "wild_pokemon_escape_task" in cleaned_channel_info:
+            del cleaned_channel_info["wild_pokemon_escape_task"]
+        if "wild_pokemon_attack_task" in cleaned_channel_info:
+            del cleaned_channel_info["wild_pokemon_attack_task"]
+
+        field_pokemons = {}
+        for user_id, pokemons in channel_info["field_pokemons"].items():
+            field_pokemons[user_id] = []
+            for pokemon in pokemons:
+                cleaned_pokemon = pokemon.copy()
+                if "message" in cleaned_pokemon:
+                    del cleaned_pokemon["message"]
+                field_pokemons[user_id].append(cleaned_pokemon)
+        cleaned_channel_info["field_pokemons"] = field_pokemons
+
+        cleaned_data[channel_id] = cleaned_channel_info
+    return cleaned_data
+
+def save_field_data():
+    try:
+        cleaned_data = clean_channel_data(channel_data)
+        field_data_json = json.dumps(cleaned_data, ensure_ascii=False, indent=4)
+        with open(field_data_file, 'w') as file:
+            file.write(field_data_json)
+
+        update_github_file(FIELD_DATA_FILE_PATH, field_data_json)
+    except Exception as e:
+        logging.error(f"Error in save_field_data: {e}", exc_info=True)
+
 @bot.command()
 async def deposit(ctx, pokemon_name: str):
     try:
@@ -562,7 +598,7 @@ async def deposit(ctx, pokemon_name: str):
             await ctx.send(f"{ctx.author.mention} 手持ちと場にいるポケモンが少なすぎます。")
             return
 
-        for i, pokemon in player_data[user_id]["team"]:
+        for i, pokemon in enumerate(player_data[user_id]["team"]):
             if pokemon["name"].lower() == pokemon_name.lower():
                 player_data[user_id]["box"].append(pokemon)
                 del player_data[user_id]["team"][i]
@@ -574,6 +610,7 @@ async def deposit(ctx, pokemon_name: str):
         await ctx.send(f"{ctx.author.mention} {pokemon_name} は手持ちにいません。")
     except Exception as e:
         logging.error(f"Error in deposit command: {e}", exc_info=True)
+
 
 @bot.command()
 async def withdraw(ctx, pokemon_name: str):
