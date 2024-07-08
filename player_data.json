@@ -11,7 +11,7 @@
         "exp": 0,
         "team": [
             {
-                "name": "ヒノアラシ",
+                "name": "新弥",
                 "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png",
                 "base_stats": {
                     "HP": 39,
@@ -40,6 +40,13 @@
                 "max_hp": 18
             }
         ],
+        "box": [],
+        "field": []
+    },
+    "1026416237485510727": {
+        "level": 1,
+        "exp": 0,
+        "team": [],
         "box": [],
         "field": []
     }
