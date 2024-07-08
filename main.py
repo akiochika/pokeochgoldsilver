@@ -221,6 +221,8 @@ async def spawn_pokemon(channel, user_ids):
     embed.add_field(name="HP", value=hp_bar, inline=False)
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
 
+    save_field_data()
+
     if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
         channel_info["wild_pokemon_escape_task"].cancel()
 
@@ -289,11 +291,14 @@ async def wild_pokemon_attack(channel):
             embed.add_field(name="技", value=skills, inline=False)
             target_pokemon["message"] = await channel.send(embed=embed)
 
+            save_field_data()
+
             if target_pokemon["hp"] == 0:
                 await channel.send(f"{target_pokemon['name']} は倒れた！ {target_pokemon['name']} は自動的に手持ちに戻ります。")
                 channel_info["field_pokemons"][target_user_id].remove(target_pokemon)
                 player_data[target_user_id]["team"].append(target_pokemon)
                 save_player_data()
+                save_field_data()
     except Exception as e:
         logging.error(f"Error in wild_pokemon_attack: {e}", exc_info=True)
 
@@ -446,7 +451,8 @@ def save_caught_pokemons():
 
 def save_field_data():
     try:
-        field_data_json = json.dumps(channel_data, ensure_ascii=False, indent=4)
+        cleaned_data = clean_channel_data(channel_data)
+        field_data_json = json.dumps(cleaned_data, ensure_ascii=False, indent=4)
         with open(field_data_file, 'w') as file:
             file.write(field_data_json)
 
@@ -542,7 +548,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -605,6 +611,7 @@ async def deposit(ctx, pokemon_name: str):
                 save_player_data()
                 await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスに預けました。")
                 await heal_pokemon_in_box(user_id, pokemon)
+                save_field_data()
                 return
 
         await ctx.send(f"{ctx.author.mention} {pokemon_name} は手持ちにいません。")
@@ -654,6 +661,7 @@ async def withdraw(ctx, pokemon_name: str):
 
         player_data[user_id]["box"].remove(selected_pokemon)
         save_player_data()
+        save_field_data()
         await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスから引き出しました。")
     except Exception as e:
         logging.error(f"Error in withdraw command: {e}", exc_info=True)
@@ -675,6 +683,7 @@ async def auto_return_to_hand(user_id, channel_id, pokemon_name, delay):
             if pokemon and not any(channel_info.get("current_pokemon") for channel_info in channel_data.values()):
                 field.remove(pokemon)
                 save_player_data()
+                save_field_data()
                 member = bot.get_user(int(user_id))
                 if member:
                     await member.send(f'{pokemon_name} がフィールドに出続けたので自動的に手持ちに戻りました。')
@@ -716,6 +725,7 @@ async def go(ctx, pokemon_name: str):
                 embed.add_field(name="技", value=skills, inline=False)
                 msg = await ctx.send(embed=embed)
                 await msg.delete(delay=300)
+                save_field_data()
                 bot.loop.create_task(auto_return_to_hand(user_id, channel_id, pokemon_name, 100))
             else:
                 await ctx.send(f"{pokemon_name} は手持ちにいません。")
