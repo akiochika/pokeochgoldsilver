@@ -131,7 +131,7 @@
         "exp": 22,
         "team": [
             {
-                "name": "ヒノアラシ",
+                "name": "新弥",
                 "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png",
                 "base_stats": {
                     "HP": 39,
@@ -149,15 +149,15 @@
                     "たいあたり"
                 ],
                 "shiny": false,
-                "level": 9,
-                "exp": 141,
-                "hp": 26,
-                "attack": 14,
-                "defense": 12,
-                "special_attack": 15,
-                "special_defense": 14,
-                "speed": 16,
-                "max_hp": 26
+                "level": 10,
+                "exp": 17,
+                "hp": 27,
+                "attack": 15,
+                "defense": 13,
+                "special_attack": 17,
+                "special_defense": 15,
+                "speed": 18,
+                "max_hp": 27
             }
         ],
         "box": [],
