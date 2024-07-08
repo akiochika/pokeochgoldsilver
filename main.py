@@ -217,7 +217,7 @@ async def spawn_pokemon(channel, user_ids):
     wild_pokemon_timeout = rarity_to_timeout[channel_info["current_pokemon"]["rarity"]]
 
     hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
-    embed = discord.Embed(title=f"野生の{'色違い ' if channel_info['current_pokemon']['shiny'] else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
+    embed = discord.Embed(title=f"野生の{'' if channel_info['current_pokemon']['shiny'] else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
     embed.set_image(url=channel_info["current_pokemon"]["image"])
     embed.add_field(name="HP", value=hp_bar, inline=False)
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
@@ -531,11 +531,9 @@ async def go(ctx, pokemon_name: str):
         pokemon = next((p for p in team if p["name"].lower() == pokemon_name.lower()), None)
 
         if pokemon:
-            if "message" in pokemon and pokemon["message"]:
-                try:
-                    await pokemon["message"].delete()  # 以前のメッセージを削除
-                except discord.errors.NotFound:
-                    pass  # メッセージが見つからなかった場合は無視
+            if pokemon["hp"] == 0:  # HP0のポケモンは出せない
+                await ctx.send(f"{pokemon_name} は HP0 なのでフィールドに出せません。")
+                return
 
             field.append(pokemon)
             channel_data[channel_id]["field_pokemons"][user_id] = field
@@ -545,11 +543,31 @@ async def go(ctx, pokemon_name: str):
             embed.set_image(url=pokemon["image"])
             embed.add_field(name="HP", value=hp_bar, inline=False)
             embed.add_field(name="技", value=skills, inline=False)  # 技を表示
-            pokemon["message"] = await ctx.send(embed=embed)
-            await pokemon["message"].delete(delay=300)
+            msg = await ctx.send(embed=embed)
+            await msg.delete(delay=300)
             bot.loop.create_task(auto_return_to_hand(user_id, channel_id, pokemon_name, 100))  # 100秒後に自動で手持ちに戻すタスクを作成
         else:
             await ctx.send(f"{pokemon_name} は手持ちにいません。")
+
+async def restore_hp(user_id):
+    if user_id in player_data:
+        for pokemon in player_data[user_id]["team"]:
+            pokemon["hp"] = pokemon["max_hp"]
+        save_player_data()
+
+async def check_all_hp_zero():
+    while True:
+        await asyncio.sleep(60)
+        for user_id in player_data:
+            if all(pokemon["hp"] == 0 for pokemon in player_data[user_id]["team"]):
+                await asyncio.sleep(300)
+                if all(pokemon["hp"] == 0 for pokemon in player_data[user_id]["team"]):
+                    await restore_hp(user_id)
+                    member = bot.get_user(int(user_id))
+                    if member:
+                        await member.send("手持ちのポケモンのHPが全回復しました。")
+
+bot.loop.create_task(check_all_hp_zero())
 
 @bot.command()
 async def return_pokemon(ctx, pokemon_name: str):
@@ -760,13 +778,10 @@ async def catch(ctx, pokemon_name: str):
 
             await channel_info["current_pokemon"]["message"].delete()  # メッセージを削除
             await ctx.send(f'{ctx.author.mention} が {"" if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
-            if channel_info["current_pokemon"]:
-                await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])
+            await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])  # ポケモンを倒したときの経験値付与
             channel_info["current_pokemon"] = None
             if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                 channel_info["wild_pokemon_escape_task"].cancel()
-            if channel_info["wild_pokemon_attack_task"] and not channel_info["wild_pokemon_attack_task"].done():
-                channel_info["wild_pokemon_attack_task"].cancel()
 
             # 場にいるポケモンを手持ちに戻す
             for user_id in channel_info["user_ids"]:
