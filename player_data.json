@@ -76,7 +76,37 @@
     "1026416237485510727": {
         "level": 1,
         "exp": 0,
-        "team": [],
+        "team": [
+            {
+                "name": "ヒノアラシ",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/155.png",
+                "base_stats": {
+                    "HP": 39,
+                    "攻撃": 52,
+                    "防御": 43,
+                    "特攻": 60,
+                    "特防": 50,
+                    "素早さ": 65
+                },
+                "rarity": 1,
+                "evolve_level": 14,
+                "evolves_to": "マグマラシ",
+                "appear": 1,
+                "moves": [
+                    "たいあたり"
+                ],
+                "shiny": false,
+                "level": 5,
+                "exp": 0,
+                "hp": 18,
+                "attack": 10,
+                "defense": 9,
+                "special_attack": 11,
+                "special_defense": 10,
+                "speed": 11,
+                "max_hp": 18
+            }
+        ],
         "box": [],
         "field": []
     }
