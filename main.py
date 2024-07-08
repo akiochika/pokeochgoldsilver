@@ -12,18 +12,17 @@ from skilllist import get_skill_damage
 from flask import Flask
 from threading import Thread
 
+# Flask サーバーの設定
 app = Flask('')
 
 @app.route('/')
 def home():
     return "Hello. I am alive!"
 
-def run():
+def run_flask():
     app.run(host='0.0.0.0', port=8080)
 
-t = Thread(target=run)
-t.start()
-
+# Discord botの設定
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -474,7 +473,7 @@ async def box_next(ctx):
 @bot.command()
 async def box_back(ctx):
     user_id = str(ctx.author.id)
-    if user_id in pages and pages[user_id]["embeds"]:
+    if user_id in pages and pages[user_id]["embeds"]):
         pages[user_id]["current_page"] -= 1
         if pages[user_id]["current_page"] < 0:
             pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -904,4 +903,9 @@ async def on_command_error(ctx, error):
         await ctx.send("エラーが発生しました。管理者に連絡してください。")
 
 if __name__ == '__main__':
+    # Flaskサーバーを別スレッドで実行
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
+
+    # Discordボットをメインスレッドで実行
     bot.run(os.environ['DISCORD_TOKEN'])
