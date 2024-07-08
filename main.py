@@ -10,6 +10,7 @@ import requests
 from skilllist import get_skill_damage
 from threading import Thread
 from flask import Flask
+import logging
 
 app = Flask('')
 
@@ -30,6 +31,7 @@ from pokemonlist import pokemon_list
 channel_data = {}
 data_file = 'caught_pokemons.json'
 player_data_file = 'player_data.json'
+field_data_file = 'field_data.json'
 caught_pokemons = {}
 player_data = {}
 
@@ -41,6 +43,10 @@ if os.path.exists(data_file):
 if os.path.exists(player_data_file):
     with open(player_data_file, 'r') as file:
         player_data = json.load(file)
+
+if os.path.exists(field_data_file):
+    with open(field_data_file, 'r') as file:
+        channel_data = json.load(file)
 
 # レベル100を超えるポケモンの修正
 def fix_pokemon_level():
@@ -140,6 +146,7 @@ def determine_shiny():
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
     bot.loop.create_task(check_all_hp_zero())
+    load_field_data()
 
 @bot.event
 async def on_message(message):
@@ -233,6 +240,7 @@ async def wild_pokemon_escape(channel):
             for user_id in channel_info["user_ids"]:
                 channel_info["field_pokemons"][user_id] = []
             save_player_data()
+            save_field_data()
     except asyncio.CancelledError:
         pass
 
@@ -367,6 +375,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 REPO_NAME = "akiochika/pokeochgoldsilver"
 PLAYER_DATA_FILE_PATH = "player_data.json"
 CAUGHT_POKEMONS_FILE_PATH = "caught_pokemons.json"
+FIELD_DATA_FILE_PATH = "field_data.json"
 
 def get_file_sha(file_path):
     try:
@@ -434,6 +443,25 @@ def save_caught_pokemons():
         update_github_file(CAUGHT_POKEMONS_FILE_PATH, caught_pokemons_json)
     except Exception as e:
         logging.error(f"Error in save_caught_pokemons: {e}", exc_info=True)
+
+def save_field_data():
+    try:
+        field_data_json = json.dumps(channel_data, ensure_ascii=False, indent=4)
+        with open(field_data_file, 'w') as file:
+            file.write(field_data_json)
+
+        update_github_file(FIELD_DATA_FILE_PATH, field_data_json)
+    except Exception as e:
+        logging.error(f"Error in save_field_data: {e}", exc_info=True)
+
+def load_field_data():
+    try:
+        global channel_data
+        if os.path.exists(field_data_file):
+            with open(field_data_file, 'r') as file:
+                channel_data = json.load(file)
+    except Exception as e:
+        logging.error(f"Error in load_field_data: {e}", exc_info=True)
 
 pages = {}
 
@@ -693,6 +721,7 @@ async def return_pokemon(ctx, pokemon_name: str):
             if pokemon:
                 field.remove(pokemon)
                 await ctx.send(f"{pokemon['name']} を手持ちに戻しました。")
+                save_field_data()
     except Exception as e:
         logging.error(f"Error in return_pokemon command: {e}", exc_info=True)
 
@@ -706,6 +735,7 @@ async def rename(ctx, old_name: str, new_name: str):
             if pokemon:
                 pokemon["name"] = new_name
                 await ctx.send(f"{old_name} の名前を {new_name} に変更しました。")
+                save_field_data()
     except Exception as e:
         logging.error(f"Error in rename command: {e}", exc_info=True)
 
@@ -744,6 +774,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
                 for user_id in channel_info["user_ids"]:
                     channel_info["field_pokemons"][user_id] = []
                 save_player_data()
+                save_field_data()
             else:
                 if channel_info["current_pokemon"]["message"]:
                     try:
@@ -754,6 +785,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
                 embed.set_image(url=channel_info["current_pokemon"]["image"])
                 embed.add_field(name="HP", value=hp_bar, inline=False)
                 channel_info["current_pokemon"]["message"] = await ctx.send(embed=embed)
+                save_field_data()
         else:
             await ctx.send(f"{target_name} はフィールドにいません。")
     except Exception as e:
@@ -915,6 +947,7 @@ async def catch(ctx, pokemon_name: str):
                 for user_id in channel_info["user_ids"]:
                     channel_info["field_pokemons"][user_id] = []
                 save_player_data()
+                save_field_data()
             else:
                 msg = await ctx.send(f'{ctx.author.mention} が {channel_info["current_pokemon"]["name"]} を捕まえ損ねた！')
                 await msg.delete(delay=5)
@@ -943,7 +976,7 @@ async def reset(ctx, member: discord.Member):
 @reset.error
 async def reset_error(ctx, error):
     try:
-        if isinstance(error, CheckFailure):
+        if isinstance(error, commands.CheckFailure):
             await ctx.send("このコマンドを使用するには管理者権限が必要です。")
     except Exception as e:
         logging.error(f"Error in reset_error: {e}", exc_info=True)
@@ -959,7 +992,7 @@ async def spawn(ctx):
 @spawn.error
 async def spawn_error(ctx, error):
     try:
-        if isinstance(error, CheckFailure):
+        if isinstance(error, commands.CheckFailure):
             await ctx.send("このコマンドを使用するには管理者権限が必要です。")
     except Exception as e:
         logging.error(f"Error in spawn_error: {e}", exc_info=True)
@@ -1007,7 +1040,7 @@ async def reset_player(ctx, member: discord.Member):
 @reset_player.error
 async def reset_player_error(ctx, error):
     try:
-        if isinstance(error, CheckFailure):
+        if isinstance(error, commands.CheckFailure):
             await ctx.send("このコマンドを使用するには管理者権限が必要です。")
     except Exception as e:
         logging.error(f"Error in reset_player_error: {e}", exc_info=True)
@@ -1023,6 +1056,16 @@ async def on_command_error(ctx, error):
     except Exception as e:
         logging.error(f"Error in on_command_error: {e}", exc_info=True)
 
+# 定期的にフィールドデータを保存するタスクを起動
+async def periodic_save_field_data():
+    try:
+        while True:
+            await asyncio.sleep(600)  # 10分ごとに保存
+            save_field_data()
+    except Exception as e:
+        logging.error(f"Error in periodic_save_field_data: {e}", exc_info=True)
+
 if __name__ == '__main__':
     Thread(target=run_flask).start()
+    bot.loop.create_task(periodic_save_field_data())
     bot.run(os.environ['DISCORD_TOKEN'])
