@@ -32,6 +32,36 @@
                 "speed": 11,
                 "max_hp": 23,
                 "exp": 0
+            },
+            {
+                "name": "エイパム",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/190.png",
+                "base_stats": {
+                    "HP": 55,
+                    "攻撃": 70,
+                    "防御": 55,
+                    "特攻": 40,
+                    "特防": 55,
+                    "素早さ": 85
+                },
+                "rarity": 1,
+                "evolve_level": 32,
+                "evolves_to": "エテボース",
+                "appear": 0,
+                "moves": [
+                    "ひっかく",
+                    "はたく"
+                ],
+                "shiny": true,
+                "level": 7,
+                "hp": 7,
+                "attack": 14,
+                "defense": 12,
+                "special_attack": 10,
+                "special_defense": 12,
+                "speed": 16,
+                "max_hp": 24,
+                "exp": 150
             }
         ],
         "box": [
@@ -212,36 +242,6 @@
                 "speed": 11,
                 "max_hp": 23,
                 "exp": 0
-            },
-            {
-                "name": "エイパム",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/190.png",
-                "base_stats": {
-                    "HP": 55,
-                    "攻撃": 70,
-                    "防御": 55,
-                    "特攻": 40,
-                    "特防": 55,
-                    "素早さ": 85
-                },
-                "rarity": 1,
-                "evolve_level": 32,
-                "evolves_to": "エテボース",
-                "appear": 0,
-                "moves": [
-                    "ひっかく",
-                    "はたく"
-                ],
-                "shiny": true,
-                "level": 7,
-                "hp": 7,
-                "attack": 14,
-                "defense": 12,
-                "special_attack": 10,
-                "special_defense": 12,
-                "speed": 16,
-                "max_hp": 24,
-                "exp": 150
             }
         ],
         "field": []
