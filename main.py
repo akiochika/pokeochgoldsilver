@@ -393,7 +393,7 @@ def get_file_sha(file_path):
         return None
 
 def update_github_file(file_path, content):
-    try:
+    try {
         url = f"https://api.github.com/repos/{REPO_NAME}/contents/{file_path}"
         headers = {
             "Authorization": f"token {GITHUB_TOKEN}",
@@ -1065,7 +1065,11 @@ async def periodic_save_field_data():
     except Exception as e:
         logging.error(f"Error in periodic_save_field_data: {e}", exc_info=True)
 
+async def main():
+    async with bot:
+        Thread(target=run_flask).start()
+        bot.loop.create_task(periodic_save_field_data())
+        await bot.start(os.getenv('DISCORD_TOKEN'))
+
 if __name__ == '__main__':
-    Thread(target=run_flask).start()
-    bot.loop.create_task(periodic_save_field_data())
-    bot.run(os.environ['DISCORD_TOKEN'])
+    asyncio.run(main())
