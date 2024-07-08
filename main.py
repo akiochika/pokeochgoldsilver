@@ -5,15 +5,14 @@ import discord
 from discord.ext import commands
 import asyncio
 from datetime import timedelta
+from discord.ext.commands import has_permissions, CheckFailure
 import base64
 import requests
-from threading import Thread
-from flask import Flask
-
 from skilllist import get_skill_damage
-from pokemonlist import pokemon_list
 
-# Flaskサーバーのセットアップ
+from flask import Flask
+from threading import Thread
+
 app = Flask('')
 
 @app.route('/')
@@ -25,14 +24,18 @@ def run_flask():
 
 intents = discord.Intents.default()
 intents.message_content = True
+
 bot = commands.Bot(command_prefix='p!', intents=intents)
 
-# JSONファイルの読み込み
+from pokemonlist import pokemon_list
+
+channel_data = {}
 data_file = 'caught_pokemons.json'
 player_data_file = 'player_data.json'
 caught_pokemons = {}
 player_data = {}
 
+# データの読み込み
 if os.path.exists(data_file):
     with open(data_file, 'r') as file:
         caught_pokemons = json.load(file)
@@ -56,6 +59,27 @@ def fix_pokemon_level():
                 pokemon["exp"] = 0
                 pokemon.update(calculate_pokemon_level(pokemon["base_stats"], 100))
                 pokemon["max_hp"] = pokemon["hp"]
+
+# メッセージカウントの初期値
+spawn_threshold = 10
+
+rarity_to_timeout = {
+    1: 60,
+    2: 50,
+    3: 30,
+    4: 20,
+    5: 7,
+    6: 15
+}
+
+rarity_level_min = {
+    1: 1,
+    2: 15,
+    3: 30,
+    4: 70,
+    5: 1,
+    6: 90
+}
 
 def calculate_pokemon_level(base_stats, level):
     hp = base_stats['HP'] * 2 * level // 100 + level + 10
@@ -106,6 +130,7 @@ def calculate_spawn_rates(player_level):
 def choose_pokemon_by_rarity(spawn_rates):
     cumulative_rates = [sum(spawn_rates[:i+1]) for i in range(len(spawn_rates))]
     roll = random.random()
+
     for rarity, rate in enumerate(cumulative_rates):
         if roll < rate:
             return rarity + 1
@@ -151,6 +176,7 @@ async def spawn_pokemon(channel, user_ids):
     player_level = get_average_player_team_level(user_ids)
     spawn_rates = calculate_spawn_rates(player_level)
     chosen_rarity = choose_pokemon_by_rarity(spawn_rates)
+
     shiny = determine_shiny()
 
     candidates = [pokemon for pokemon in pokemon_list if pokemon["rarity"] == chosen_rarity and (pokemon["shiny"] == shiny or not pokemon["shiny"]) and pokemon["appear"] == 0]
@@ -162,8 +188,12 @@ async def spawn_pokemon(channel, user_ids):
 
     channel_info["current_pokemon"] = random.choice(candidates)
     channel_info["current_pokemon"]["shiny"] = shiny
-    min_level = rarity_level_min[channel_info["current_pokemon"]["rarity"]]
-    max_level = min(player_level, 100)
+
+    if all(user_id not in player_data for user_id in user_ids):
+        min_level, max_level = 1, 5
+    else:
+        min_level = rarity_level_min[channel_info["current_pokemon"]["rarity"]]
+        max_level = min(player_level, 100)
 
     if min_level > max_level:
         channel_info["current_pokemon"] = random.choice([pokemon for pokemon in pokemon_list if pokemon["rarity"] == 1 and pokemon["appear"] == 0])
@@ -176,6 +206,7 @@ async def spawn_pokemon(channel, user_ids):
     channel_info["current_pokemon"]["max_hp"] = channel_info["current_pokemon"]["hp"]
 
     wild_pokemon_timeout = rarity_to_timeout[channel_info["current_pokemon"]["rarity"]]
+
     hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
     embed = discord.Embed(title=f"野生の{'色違い ' if channel_info['current_pokemon']['shiny'] else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
     embed.set_image(url=channel_info["current_pokemon"]["image"])
@@ -441,7 +472,7 @@ async def box_next(ctx):
 @bot.command()
 async def box_back(ctx):
     user_id = str(ctx.author.id)
-    if user_id in pages and pages[user_id]["embeds"]:
+    if user_id in pages and pages[user_id]["embeds"]):
         pages[user_id]["current_page"] -= 1
         if pages[user_id]["current_page"] < 0:
             pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -798,7 +829,7 @@ async def catch(ctx, pokemon_name: str):
         await ctx.send(f'{pokemon_name} はここにいない！')
 
 @bot.command()
-@has_permissions(administrator=True)
+@commands.has_permissions(administrator=True)
 async def reset(ctx, member: discord.Member):
     user_id = str(member.id)
     if user_id in caught_pokemons:
@@ -817,7 +848,7 @@ async def reset_error(ctx, error):
         await ctx.send("このコマンドを使用するには管理者権限が必要です。")
         
 @bot.command()
-@has_permissions(administrator=True)
+@commands.has_permissions(administrator=True)
 async def spawn(ctx):
     await spawn_pokemon(ctx.channel, [str(ctx.author.id)])
 
@@ -847,7 +878,7 @@ async def player_data_command(ctx):
         await ctx.send(f'{ctx.author.mention} のデータは見つかりませんでした。')
 
 @bot.command()
-@has_permissions(administrator=True)
+@commands.has_permissions(administrator=True)
 async def reset_player(ctx, member: discord.Member):
     user_id = str(member.id)
     if user_id in player_data:
