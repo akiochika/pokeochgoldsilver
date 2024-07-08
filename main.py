@@ -940,6 +940,14 @@ async def on_command_error(ctx, error):
     else:
         raise error
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("有効なコマンドを入力してください。")
+    else:
+        print(f'Unhandled error: {error}')
+        await ctx.send("エラーが発生しました。管理者に連絡してください。")
+
 # ボットの起動
 if __name__ == '__main__':
     bot.run(os.environ['DISCORD_TOKEN'])
