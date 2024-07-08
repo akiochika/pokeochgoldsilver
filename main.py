@@ -184,10 +184,10 @@ async def spawn_pokemon(channel, user_ids):
     spawn_rates = calculate_spawn_rates(player_level)
     chosen_rarity = choose_pokemon_by_rarity(spawn_rates)
 
-        # 色違い判定
+    # 色違い判定
     shiny = determine_shiny()
 
-        # 候補ポケモンを選定
+    # 候補ポケモンを選定
     candidates = [pokemon for pokemon in pokemon_list if pokemon["rarity"] == chosen_rarity and (pokemon["shiny"] == shiny or not pokemon["shiny"]) and pokemon["appear"] == 0]
     if not candidates:
         candidates = [pokemon for pokemon in pokemon_list if pokemon["rarity"] == 1 and (pokemon["shiny"] == shiny or not pokemon["shiny"]) and pokemon["appear"] == 0]
@@ -198,7 +198,7 @@ async def spawn_pokemon(channel, user_ids):
     channel_info["current_pokemon"] = random.choice(candidates)
     channel_info["current_pokemon"]["shiny"] = shiny  # Ensure shiny attribute is set correctly
 
-        # プレイヤーがゲームを始めていない場合、レベル5以下のポケモンを出現させる
+    # プレイヤーがゲームを始めていない場合、レベル5以下のポケモンを出現させる
     if all(user_id not in player_data for user_id in user_ids):
         min_level, max_level = 1, 5
     else:
@@ -223,7 +223,7 @@ async def spawn_pokemon(channel, user_ids):
     embed.add_field(name="HP", value=hp_bar, inline=False)
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
 
-        # 既存のタスクがある場合はキャンセル
+    # 既存のタスクがある場合はキャンセル
     if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
         channel_info["wild_pokemon_escape_task"].cancel()
 
@@ -297,9 +297,6 @@ async def wild_pokemon_attack(channel):
             player_data[target_user_id]["team"].append(target_pokemon)
             save_player_data()
 
-
-
-
 @bot.command()
 async def start(ctx):
     user_id = str(ctx.author.id)
@@ -334,7 +331,6 @@ async def choose(ctx, pokemon_name: str):
             await ctx.send(f'{pokemon_name} は選べるポケモンに含まれていません。')
     else:
         await ctx.send(f'{ctx.author.mention} は既にポケモンを持っています。')
-
 
 def save_player_data():
     # `Message` オブジェクトを削除
@@ -436,7 +432,7 @@ async def deposit(ctx, pokemon_name: str):
         await ctx.send(f"{ctx.author.mention} 手持ちと場にいるポケモンが少なすぎます。")
         return
 
-    for i, pokemon in player_data[user_id]["team"]:
+    for i, pokemon in enumerate(player_data[user_id]["team"]):
         if pokemon["name"].lower() == pokemon_name.lower():
             player_data[user_id]["box"].append(pokemon)
             del player_data[user_id]["team"][i]
@@ -567,8 +563,6 @@ async def check_all_hp_zero():
                     member = bot.get_user(int(user_id))
                     if member:
                         await member.send("手持ちのポケモンのHPが全回復しました。")
-
-bot.loop.create_task(check_all_hp_zero())
 
 @bot.command()
 async def return_pokemon(ctx, pokemon_name: str):
@@ -739,6 +733,7 @@ async def check_evolution(ctx, user_id, pokemon):
             await ctx.send(f'{ctx.author.mention} の {original_name} が {pokemon["name"]} に進化しました！')
             save_player_data()
 
+
 @bot.command()
 async def catch(ctx, pokemon_name: str):
     user_id = str(ctx.author.id)
@@ -779,12 +774,12 @@ async def catch(ctx, pokemon_name: str):
 
             await channel_info["current_pokemon"]["message"].delete()  # メッセージを削除
             await ctx.send(f'{ctx.author.mention} が {"" if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
-            await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])  # ポケモンを倒したときの経験値付与
+            await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])  # ポケモンを捕まえたときの経験値付与
             channel_info["current_pokemon"] = None
             if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                 channel_info["wild_pokemon_escape_task"].cancel()
 
-            # 場にいるポケモンを手持ちに戻す
+                    # 場にいるポケモンを手持ちに戻す
             for user_id in channel_info["user_ids"]:
                 channel_info["field_pokemons"][user_id] = []
             save_player_data()
@@ -812,7 +807,7 @@ async def reset(ctx, member: discord.Member):
 async def reset_error(ctx, error):
     if isinstance(error, CheckFailure):
         await ctx.send("このコマンドを使用するには管理者権限が必要です。")
-
+        
 @bot.command()
 @has_permissions(administrator=True)
 async def spawn(ctx):
@@ -866,6 +861,6 @@ async def on_command_error(ctx, error):
     else:
         raise error
 
-# 最後に bot を実行
-my_secret = os.environ['DISCORD_TOKEN']
-bot.run(my_secret)
+# ボットの起動
+if __name__ == '__main__':
+    bot.run(os.environ['DISCORD_TOKEN'])
