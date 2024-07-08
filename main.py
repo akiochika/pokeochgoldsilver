@@ -7,6 +7,8 @@ import asyncio
 from datetime import timedelta
 from discord.ext.commands import has_permissions, CheckFailure
 import time
+import base64  # 追加
+import requests  # 追加
 
 from skilllist import get_skill_damage  # 追加
 from flask import Flask
