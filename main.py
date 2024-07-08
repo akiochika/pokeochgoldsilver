@@ -548,7 +548,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]):
+        if user_id in pages and pages[user_id]["embeds"]:
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
