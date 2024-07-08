@@ -405,7 +405,7 @@ def update_github_file(file_path, content):
             "content": base64.b64encode(content.encode()).decode(),
             "sha": file_sha
         }
-        response = requests.put(url, headers=headers, json(data))
+        response = requests.put(url, headers=headers, json=data)
         if response.status_code == 200:
             print(f"Successfully updated {file_path} on GitHub")
         else:
@@ -530,7 +530,7 @@ async def box(ctx):
 async def box_next(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] += 1
             if pages[user_id]["current_page"] >= len(pages[user_id]["embeds"]):
                 pages[user_id]["current_page"] = 0
@@ -542,7 +542,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -562,7 +562,7 @@ async def deposit(ctx, pokemon_name: str):
             await ctx.send(f"{ctx.author.mention} 手持ちと場にいるポケモンが少なすぎます。")
             return
 
-        for i, pokemon in enumerate(player_data[user_id]["team"]):
+        for i, pokemon in player_data[user_id]["team"]:
             if pokemon["name"].lower() == pokemon_name.lower():
                 player_data[user_id]["box"].append(pokemon)
                 del player_data[user_id]["team"][i]
@@ -619,7 +619,7 @@ async def withdraw(ctx, pokemon_name: str):
         save_player_data()
         await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスから引き出しました。")
     except Exception as e:
-        logging.error(f"Error in withdraw command: {e}", excinfo=True)
+        logging.error(f"Error in withdraw command: {e}", exc_info=True)
 
 async def heal_pokemon_in_box(user_id, pokemon):
     try:
