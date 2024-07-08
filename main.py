@@ -9,20 +9,7 @@ from discord.ext.commands import has_permissions, CheckFailure
 import base64
 import requests
 from skilllist import get_skill_damage
-from flask import Flask
-from threading import Thread
 
-# Flask サーバーの設定
-app = Flask('')
-
-@app.route('/')
-def home():
-    return "Hello. I am alive!"
-
-def run_flask():
-    app.run(host='0.0.0.0', port=8080)
-
-# Discord botの設定
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -903,9 +890,4 @@ async def on_command_error(ctx, error):
         await ctx.send("エラーが発生しました。管理者に連絡してください。")
 
 if __name__ == '__main__':
-    # Flaskサーバーを別スレッドで実行
-    flask_thread = Thread(target=run_flask)
-    flask_thread.start()
-
-    # Discordボットをメインスレッドで実行
     bot.run(os.environ['DISCORD_TOKEN'])
