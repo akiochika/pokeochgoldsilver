@@ -6,15 +6,11 @@ from discord.ext import commands
 import asyncio
 from datetime import timedelta
 from discord.ext.commands import has_permissions, CheckFailure
-import time
-import base64  # 追加
-import requests  # 追加
-
-from skilllist import get_skill_damage  # 追加
+import base64
+import requests
+from skilllist import get_skill_damage
 from flask import Flask
 from threading import Thread
-import requests
-from base64 import b64encode
 
 app = Flask('')
 
@@ -33,7 +29,6 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='p!', intents=intents)
 
-# pokemonlist.pyからpokemon_listをインポート
 from pokemonlist import pokemon_list
 
 channel_data = {}
@@ -68,9 +63,8 @@ def fix_pokemon_level():
                 pokemon["max_hp"] = pokemon["hp"]
 
 # メッセージカウントの初期値
-spawn_threshold = 10  # ポケモンが出現するメッセージ数のしきい値
+spawn_threshold = 10
 
-# 逃げる時間をレアリティに基づいて設定
 rarity_to_timeout = {
     1: 60,
     2: 50,
@@ -80,7 +74,6 @@ rarity_to_timeout = {
     6: 15
 }
 
-# ランクごとのレベル下限
 rarity_level_min = {
     1: 1,
     2: 15,
@@ -99,15 +92,14 @@ def calculate_pokemon_level(base_stats, level):
     speed = base_stats['素早さ'] * 2 * level // 100 + 5
     return {'hp': hp, 'attack': attack, 'defense': defense, 'special_attack': special_attack, 'special_defense': special_defense, 'speed': speed}
 
-# Call the fix_pokemon_level function after defining calculate_pokemon_level
 fix_pokemon_level()
 
 def calculate_capture_chance(pokemon, current_hp):
     base_chance = 100
     hp_factor = (current_hp / pokemon["max_hp"]) * 100
-    rarity_penalty = pokemon["rarity"] * 10  # レアリティが高いほど捕まえにくい
+    rarity_penalty = pokemon["rarity"] * 10
     capture_chance = base_chance - hp_factor - rarity_penalty
-    return max(capture_chance, 1)  # 確率は最低でも1%
+    return max(capture_chance, 1)
 
 def create_hp_bar(current_hp, max_hp, length=10):
     filled_length = int(length * current_hp // max_hp)
@@ -143,10 +135,10 @@ def choose_pokemon_by_rarity(spawn_rates):
 
     for rarity, rate in enumerate(cumulative_rates):
         if roll < rate:
-            return rarity + 1  # Rarity is 1-indexed
+            return rarity + 1
 
 def determine_shiny():
-    return random.randint(1, 4096) == 1  # 色違い確率を1/4096に設定
+    return random.randint(1, 4096) == 1
 
 @bot.event
 async def on_ready():
@@ -170,7 +162,7 @@ async def on_message(message):
     if channel_info["current_pokemon"] is None:
         channel_info["message_count"] += 1
 
-        if channel_info["message_count"] >= spawn_threshold:  # しきい値を超えたらポケモンを出現
+        if channel_info["message_count"] >= spawn_threshold:
             await spawn_pokemon(message.channel, channel_info["user_ids"])
             channel_info["message_count"] = 0
 
@@ -180,17 +172,15 @@ async def spawn_pokemon(channel, user_ids):
     channel_id = str(channel.id)
     channel_info = channel_data[channel_id]
 
-    if channel_info["current_pokemon"] is not None:  # 既にポケモンが出現している場合は新たに出現させない
+    if channel_info["current_pokemon"] is not None:
         return
 
     player_level = get_average_player_team_level(user_ids)
     spawn_rates = calculate_spawn_rates(player_level)
     chosen_rarity = choose_pokemon_by_rarity(spawn_rates)
 
-    # 色違い判定
     shiny = determine_shiny()
 
-    # 候補ポケモンを選定
     candidates = [pokemon for pokemon in pokemon_list if pokemon["rarity"] == chosen_rarity and (pokemon["shiny"] == shiny or not pokemon["shiny"]) and pokemon["appear"] == 0]
     if not candidates:
         candidates = [pokemon for pokemon in pokemon_list if pokemon["rarity"] == 1 and (pokemon["shiny"] == shiny or not pokemon["shiny"]) and pokemon["appear"] == 0]
@@ -199,14 +189,13 @@ async def spawn_pokemon(channel, user_ids):
         return
 
     channel_info["current_pokemon"] = random.choice(candidates)
-    channel_info["current_pokemon"]["shiny"] = shiny  # Ensure shiny attribute is set correctly
+    channel_info["current_pokemon"]["shiny"] = shiny
 
-    # プレイヤーがゲームを始めていない場合、レベル5以下のポケモンを出現させる
     if all(user_id not in player_data for user_id in user_ids):
         min_level, max_level = 1, 5
     else:
         min_level = rarity_level_min[channel_info["current_pokemon"]["rarity"]]
-        max_level = min(player_level, 100)  # プレイヤーの平均レベル以下のポケモンを出現させる
+        max_level = min(player_level, 100)
 
     if min_level > max_level:
         channel_info["current_pokemon"] = random.choice([pokemon for pokemon in pokemon_list if pokemon["rarity"] == 1 and pokemon["appear"] == 0])
@@ -221,34 +210,32 @@ async def spawn_pokemon(channel, user_ids):
     wild_pokemon_timeout = rarity_to_timeout[channel_info["current_pokemon"]["rarity"]]
 
     hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
-    embed = discord.Embed(title=f"野生の{'' if channel_info['current_pokemon']['shiny'] else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
+    embed = discord.Embed(title=f"野生の{'色違い ' if channel_info['current_pokemon']['shiny'] else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
     embed.set_image(url=channel_info["current_pokemon"]["image"])
     embed.add_field(name="HP", value=hp_bar, inline=False)
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
 
-    # 既存のタスクがある場合はキャンセル
     if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
         channel_info["wild_pokemon_escape_task"].cancel()
 
-    # 新しい逃げるタスクを設定
     channel_info["wild_pokemon_escape_task"] = bot.loop.create_task(wild_pokemon_escape(channel))
-    # 野生ポケモンの攻撃タスクを設定
     channel_info["wild_pokemon_attack_task"] = bot.loop.create_task(wild_pokemon_attack(channel))
 
 async def wild_pokemon_escape(channel):
     channel_id = str(channel.id)
     channel_info = channel_data[channel_id]
 
-    await asyncio.sleep(rarity_to_timeout[channel_info["current_pokemon"]["rarity"]])
-    if channel_info["current_pokemon"]:
-        await channel_info["current_pokemon"]["message"].delete()
-        await channel.send(f"{channel_info['current_pokemon']['name']} は逃げてしまった！")
-        channel_info["current_pokemon"] = None
-
-        # 場にいるポケモンを手持ちに戻す
-        for user_id in channel_info["user_ids"]:
-            channel_info["field_pokemons"][user_id] = []
-        save_player_data()
+    try:
+        await asyncio.sleep(rarity_to_timeout[channel_info["current_pokemon"]["rarity"]])
+        if channel_info["current_pokemon"]:
+            await channel_info["current_pokemon"]["message"].delete()
+            await channel.send(f"{channel_info['current_pokemon']['name']} は逃げてしまった！")
+            channel_info["current_pokemon"] = None
+            for user_id in channel_info["user_ids"]:
+                channel_info["field_pokemons"][user_id] = []
+            save_player_data()
+    except asyncio.CancelledError:
+        pass
 
 rarity_to_attack_interval = {
     1: 10,
@@ -279,16 +266,16 @@ async def wild_pokemon_attack(channel):
         damage = get_skill_damage(move, attacker, target_pokemon)
         target_pokemon["hp"] = max(0, target_pokemon["hp"] - damage)
         hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
-        skills = ', '.join(target_pokemon.get("moves", ["なし"]))  # ポケモンの技を表示
+        skills = ', '.join(target_pokemon.get("moves", ["なし"]))
 
         if "message" in target_pokemon and target_pokemon["message"]:
             try:
-                await target_pokemon["message"].delete()  # 以前のHPのコメントを削除
+                await target_pokemon["message"].delete()
             except discord.errors.NotFound:
-                pass  # メッセージが見つからなかった場合は無視
+                pass
 
         embed = discord.Embed(title=f"{attacker['name']} は {target_pokemon['name']} に {move} を使った！")
-        embed.set_image(url=target_pokemon["image"])  # キャラクターの画像を表示
+        embed.set_image(url=target_pokemon["image"])
         embed.add_field(name="ダメージ", value=f"{damage}", inline=False)
         embed.add_field(name="HP", value=hp_bar, inline=False)
         embed.add_field(name="技", value=skills, inline=False)
@@ -324,7 +311,7 @@ async def choose(ctx, pokemon_name: str):
                 starter_pokemon["exp"] = 0
                 starter_pokemon.update(calculate_pokemon_level(starter_pokemon["base_stats"], starter_pokemon["level"]))
                 starter_pokemon["max_hp"] = starter_pokemon["hp"]
-                starter_pokemon["moves"] = ["たいあたり"]  # 初期技として「たいあたり」を追加
+                starter_pokemon["moves"] = ["たいあたり"]
                 player_data[user_id]["team"].append(starter_pokemon)
                 save_player_data()
                 await ctx.send(f'{ctx.author.mention} は {pokemon_name} を選びました！')
@@ -336,7 +323,7 @@ async def choose(ctx, pokemon_name: str):
         await ctx.send(f'{ctx.author.mention} は既にポケモンを持っています。')
 
 def github_write_file(content, file_path, message):
-    url = f'https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}'
+    url = f'https://api.github.com/repos/{REPO_NAME}/contents/{file_path}'
     headers = {
         'Authorization': f'token {GITHUB_TOKEN}',
         'Accept': 'application/vnd.github.v3+json'
@@ -348,7 +335,7 @@ def github_write_file(content, file_path, message):
     else:
         sha = None
 
-    content = b64encode(content.encode()).decode()
+    content = base64.b64encode(content.encode()).decode()
 
     data = {
         'message': message,
@@ -400,7 +387,6 @@ def update_github_file(file_path, content):
         print(f"Failed to update {file_path} on GitHub: {response.content}")
 
 def save_player_data():
-    # `Message` オブジェクトを削除
     for user_id in player_data:
         for pokemon in player_data[user_id]["team"]:
             if "message" in pokemon:
@@ -416,7 +402,6 @@ def save_player_data():
     with open(player_data_file, 'w') as file:
         file.write(player_data_json)
     
-    # GitHubにアップデート
     update_github_file(PLAYER_DATA_FILE_PATH, player_data_json)
 
 def save_caught_pokemons():
@@ -424,16 +409,13 @@ def save_caught_pokemons():
     with open(data_file, 'w') as file:
         file.write(caught_pokemons_json)
     
-    # GitHubにアップデート
     update_github_file(CAUGHT_POKEMONS_FILE_PATH, caught_pokemons_json)
 
-# ポケモンリストの表示
-# ページ情報を保持するための辞書
 pages = {}
 
 def create_embeds(pokemon_list):
     embeds = []
-    for i in range(0, len(pokemon_list), 10): #1ページに10項目
+    for i in range(0, len(pokemon_list), 10):
         current_embed = discord.Embed(title="ポケモンリスト")
         for pokemon in pokemon_list[i:i+10]:
             current_embed.add_field(name=pokemon["name"], value=f"レアリティ: {pokemon['rarity']}, 進化レベル: {pokemon['evolve_level']}", inline=False)
@@ -455,7 +437,7 @@ async def next_page(ctx):
     if user_id in pages and pages[user_id]["embeds"]:
         pages[user_id]["current_page"] += 1
         if pages[user_id]["current_page"] >= len(pages[user_id]["embeds"]):
-            pages[user_id]["current_page"] = 0  # ループバックする
+            pages[user_id]["current_page"] = 0
         await ctx.send(embed=pages[user_id]["embeds"][pages[user_id]["current_page"]])
 
 @bot.command()
@@ -464,7 +446,7 @@ async def previous_page(ctx):
     if user_id in pages:
         pages[user_id]["current_page"] -= 1
         if pages[user_id]["current_page"] < 0:
-            pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1  # ループバックする
+            pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
         await ctx.send(embed=pages[user_id]["embeds"][pages[user_id]["current_page"]])
 
 @bot.command()
@@ -498,7 +480,6 @@ async def box_back(ctx):
             pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
         await ctx.send(embed=pages[user_id]["embeds"][pages[user_id]["current_page"]])
 
-# ボックスにポケモンを預けるコマンド
 @bot.command()
 async def deposit(ctx, pokemon_name: str):
     user_id = str(ctx.author.id)
@@ -506,7 +487,6 @@ async def deposit(ctx, pokemon_name: str):
         await ctx.send(f"{ctx.author.mention} あなたのデータが見つかりません。")
         return
 
-    # 場にいるポケモンと手持ちポケモンを合わせて3匹以上か確認
     if len(player_data[user_id]["team"]) + len(player_data[user_id]["field"]) <= 1:
         await ctx.send(f"{ctx.author.mention} 手持ちと場にいるポケモンが少なすぎます。")
         return
@@ -517,13 +497,11 @@ async def deposit(ctx, pokemon_name: str):
             del player_data[user_id]["team"][i]
             save_player_data()
             await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスに預けました。")
-            # ボックスに預けたポケモンのHPを10分後に全回復する
             await heal_pokemon_in_box(user_id, pokemon)
             return
 
     await ctx.send(f"{ctx.author.mention} {pokemon_name} は手持ちにいません。")
 
-# ボックスからポケモンを引き出すコマンド
 @bot.command()
 async def withdraw(ctx, pokemon_name: str):
     user_id = str(ctx.author.id)
@@ -531,7 +509,6 @@ async def withdraw(ctx, pokemon_name: str):
         await ctx.send(f"{ctx.author.mention} あなたのデータが見つかりません。")
         return
 
-    # 場にいるポケモンと手持ちポケモンを合わせて3匹以上か確認
     if len(player_data[user_id]["team"]) + len(player_data[user_id]["field"]) >= 3:
         await ctx.send(f"{ctx.author.mention} 手持ちと場にいるポケモンが多すぎます。")
         return
@@ -541,7 +518,6 @@ async def withdraw(ctx, pokemon_name: str):
         await ctx.send(f"{ctx.author.mention} {pokemon_name} はボックスにいません。")
         return
 
-    # 引き出すポケモンを選択する
     if len(possible_pokemons) > 1:
         await ctx.send(f"{ctx.author.mention} 同じ名前のポケモンが複数います。番号を指定してください。")
         for idx, pokemon in enumerate(possible_pokemons, start=1):
@@ -570,7 +546,7 @@ async def withdraw(ctx, pokemon_name: str):
     await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスから引き出しました。")
 
 async def heal_pokemon_in_box(user_id, pokemon):
-    await asyncio.sleep(600)  # 10分間待つ
+    await asyncio.sleep(600)
     pokemon["hp"] = pokemon["max_hp"]
     save_player_data()
 
@@ -579,7 +555,7 @@ async def auto_return_to_hand(user_id, channel_id, pokemon_name, delay):
     if user_id in player_data and channel_id in channel_data:
         field = channel_data[channel_id]["field_pokemons"].get(user_id, [])
         pokemon = next((p for p in field if p["name"].lower() == pokemon_name.lower()), None)
-        if pokemon and not any(channel_info.get("current_pokemon") for channel_info in channel_data.values()):  # 他のチャンネルにポケモンがフィールドにいない場合のみ手持ちに戻す
+        if pokemon and not any(channel_info.get("current_pokemon") for channel_info in channel_data.values()):
             field.remove(pokemon)
             save_player_data()
             member = bot.get_user(int(user_id))
@@ -595,7 +571,6 @@ async def go(ctx, pokemon_name: str):
         team = player_data[user_id]["team"]
         field = channel_data[channel_id]["field_pokemons"].get(user_id, [])
 
-        # プレイヤーが既にポケモンを出しているか確認
         if any(p["name"].lower() == pokemon_name.lower() for p in field):
             await ctx.send(f"{ctx.author.mention} は既に {pokemon_name} を出しています。")
             return
@@ -607,21 +582,21 @@ async def go(ctx, pokemon_name: str):
         pokemon = next((p for p in team if p["name"].lower() == pokemon_name.lower()), None)
 
         if pokemon:
-            if pokemon["hp"] == 0:  # HP0のポケモンは出せない
+            if pokemon["hp"] == 0:
                 await ctx.send(f"{pokemon_name} は HP0 なのでフィールドに出せません。")
                 return
 
             field.append(pokemon)
             channel_data[channel_id]["field_pokemons"][user_id] = field
-            skills = ', '.join(pokemon.get("moves", ["なし"]))  # ポケモンの技を表示
+            skills = ', '.join(pokemon.get("moves", ["なし"]))
             hp_bar = create_hp_bar(pokemon["hp"], pokemon["max_hp"])
             embed = discord.Embed(title=f"{ctx.author.name} の {pokemon['name']} (Lv: {pokemon['level']})")
             embed.set_image(url=pokemon["image"])
             embed.add_field(name="HP", value=hp_bar, inline=False)
-            embed.add_field(name="技", value=skills, inline=False)  # 技を表示
+            embed.add_field(name="技", value=skills, inline=False)
             msg = await ctx.send(embed=embed)
             await msg.delete(delay=300)
-            bot.loop.create_task(auto_return_to_hand(user_id, channel_id, pokemon_name, 100))  # 100秒後に自動で手持ちに戻すタスクを作成
+            bot.loop.create_task(auto_return_to_hand(user_id, channel_id, pokemon_name, 100))
         else:
             await ctx.send(f"{pokemon_name} は手持ちにいません。")
 
@@ -689,23 +664,22 @@ async def skill(ctx, skill_name: str, target_name: str = None):
         if channel_info["current_pokemon"]["hp"] == 0:
             if channel_info["current_pokemon"]["message"]:
                 try:
-                    await channel_info["current_pokemon"]["message"].delete()  # メッセージを削除
+                    await channel_info["current_pokemon"]["message"].delete()
                 except discord.errors.NotFound:
-                    pass  # メッセージが見つからなかった場合は無視
+                    pass
             await ctx.send(f"{channel_info['current_pokemon']['name']} は倒れた！")
-            await give_exp_on_defeat(ctx, channel_info["current_pokemon"]["level"])  # ポケモンを倒したときの経験値付与
+            await give_exp_on_defeat(ctx, channel_info["current_pokemon"]["level"])
             channel_info["current_pokemon"] = None
 
-            # 場にいるポケモンを手持ちに戻す
             for user_id in channel_info["user_ids"]:
                 channel_info["field_pokemons"][user_id] = []
             save_player_data()
         else:
             if channel_info["current_pokemon"]["message"]:
                 try:
-                    await channel_info["current_pokemon"]["message"].delete()  # メッセージを削除
+                    await channel_info["current_pokemon"]["message"].delete()
                 except discord.errors.NotFound:
-                    pass  # メッセージが見つからなかった場合は無視
+                    pass
             embed = discord.Embed(title=f"野生の{channel_info['current_pokemon']['name']}")
             embed.set_image(url=channel_info["current_pokemon"]["image"])
             embed.add_field(name="HP", value=hp_bar, inline=False)
@@ -718,11 +692,9 @@ async def skill(ctx, skill_name: str, target_name: str = None):
 async def all_data_reset(ctx):
     global caught_pokemons, player_data
 
-    # 全プレイヤーのデータを初期化
     caught_pokemons = {}
     player_data = {}
 
-    # データファイルを初期化
     with open(data_file, 'w') as file:
         json.dump(caught_pokemons, file, ensure_ascii=False, indent=4)
 
@@ -731,29 +703,25 @@ async def all_data_reset(ctx):
 
     await ctx.send("全プレイヤーのデータを初期化しました。")
 
-# 経験値を計算する関数（改良版）
 def calculate_exp(level, rarity):
     base_exp = 10 * (level ** 1.5)
-    rarity_multiplier = 1 + 0.2 * (rarity - 1)  # レアリティに基づいて経験値倍率を増加
+    rarity_multiplier = 1 + 0.2 * (rarity - 1)
     return int(base_exp * rarity_multiplier)
 
-# ポケモンを倒したときの経験値付与
 async def give_exp(user_id, exp):
     if user_id in player_data:
         player_data[user_id]["exp"] += exp
         await check_level_up(user_id)
         save_player_data()
 
-# レベルアップをチェックする関数（改良版）
 async def check_level_up(user_id):
-    while player_data[user_id]["exp"] >= calculate_exp(player_data[user_id]["level"], 1):  # レアリティ1の基準でレベルアップ
+    while player_data[user_id]["exp"] >= calculate_exp(player_data[user_id]["level"], 1):
         player_data[user_id]["exp"] -= calculate_exp(player_data[user_id]["level"], 1)
         player_data[user_id]["level"] += 1
         if player_data[user_id]["level"] > 100:
             player_data[user_id]["level"] = 100
             player_data[user_id]["exp"] = 0
 
-        # チーム内のポケモンのレベルをアップデート
         for pokemon in player_data[user_id]["team"]:
             while pokemon["exp"] >= calculate_exp(pokemon["level"], pokemon["rarity"]):
                 pokemon["exp"] -= calculate_exp(pokemon["level"], pokemon["rarity"])
@@ -765,9 +733,8 @@ async def check_level_up(user_id):
                 pokemon["max_hp"] = pokemon["hp"]
                 await check_evolution(user_id, pokemon)
 
-# 捕獲成功時の経験値付与（改良版）
 async def give_exp_on_catch(ctx, pokemon_level):
-    exp = calculate_exp(pokemon_level, 1)  # レアリティ1の基準で経験値付与
+    exp = calculate_exp(pokemon_level, 1)
     for user_id in channel_data[str(ctx.channel.id)]["user_ids"]:
         if channel_data[str(ctx.channel.id)]["field_pokemons"].get(user_id, []):
             await give_exp(user_id, exp)
@@ -775,9 +742,8 @@ async def give_exp_on_catch(ctx, pokemon_level):
             if member:
                 await ctx.send(f'{member.mention} が {exp} の経験値を獲得しました！')
 
-# ポケモンを倒したときの経験値付与（改良版）
 async def give_exp_on_defeat(ctx, pokemon_level):
-    exp = calculate_exp(pokemon_level, 1)  # レアリティ1の基準で経験値付与
+    exp = calculate_exp(pokemon_level, 1)
     channel_id = str(ctx.channel.id)
     if channel_id in channel_data:
         for user_id in channel_data[channel_id]["user_ids"]:
@@ -798,7 +764,6 @@ async def give_exp_on_defeat(ctx, pokemon_level):
                     await ctx.send(f'{member.mention} のポケモンが {exp} の経験値を獲得しました！')
         save_player_data()
 
-# ポケモンが進化するかチェックする関数
 async def check_evolution(ctx, user_id, pokemon):
     if pokemon["evolve_level"] is not None and pokemon["level"] >= pokemon["evolve_level"] and "evolves_to" in pokemon:
         evolves_to = next((p for p in pokemon_list if p["name"] == pokemon["evolves_to"] and p["shiny"] == pokemon["shiny"]), None)
@@ -811,7 +776,6 @@ async def check_evolution(ctx, user_id, pokemon):
             pokemon["shiny"] = shiny
             await ctx.send(f'{ctx.author.mention} の {original_name} が {pokemon["name"]} に進化しました！')
             save_player_data()
-
 
 @bot.command()
 async def catch(ctx, pokemon_name: str):
@@ -828,14 +792,13 @@ async def catch(ctx, pokemon_name: str):
                 player_data[user_id] = {"level": 1, "exp": 0, "team": [], "box": [], "field": []}
             current_pokemon_copy = channel_info["current_pokemon"].copy()
             current_pokemon_copy["exp"] = 0
-            current_pokemon_copy["shiny"] = channel_info["current_pokemon"]["shiny"]  # 保持する
+            current_pokemon_copy["shiny"] = channel_info["current_pokemon"]["shiny"]
             if len(player_data[user_id]["team"]) < 3:
                 player_data[user_id]["team"].append(current_pokemon_copy)
             else:
                 player_data[user_id]["box"].append(current_pokemon_copy)
             caught_pokemons[user_id].append(current_pokemon_copy)
 
-            # JSONに保存する前にコピーからMessageオブジェクトを削除
             for pokemon in caught_pokemons[user_id]:
                 if "message" in pokemon:
                     del pokemon["message"]
@@ -851,14 +814,13 @@ async def catch(ctx, pokemon_name: str):
             with open(player_data_file, 'w') as file:
                 json.dump(player_data, file, ensure_ascii=False, indent=4)
 
-            await channel_info["current_pokemon"]["message"].delete()  # メッセージを削除
-            await ctx.send(f'{ctx.author.mention} が {"" if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
-            await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])  # ポケモンを捕まえたときの経験値付与
+            await channel_info["current_pokemon"]["message"].delete()
+            await ctx.send(f'{ctx.author.mention} が {"色違い " if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
+            await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])
             channel_info["current_pokemon"] = None
             if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                 channel_info["wild_pokemon_escape_task"].cancel()
 
-                    # 場にいるポケモンを手持ちに戻す
             for user_id in channel_info["user_ids"]:
                 channel_info["field_pokemons"][user_id] = []
             save_player_data()
@@ -938,16 +900,8 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send("有効なコマンドを入力してください。")
     else:
-        raise error
-
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        await ctx.send("有効なコマンドを入力してください。")
-    else:
         print(f'Unhandled error: {error}')
         await ctx.send("エラーが発生しました。管理者に連絡してください。")
 
-# ボットの起動
 if __name__ == '__main__':
     bot.run(os.environ['DISCORD_TOKEN'])
