@@ -1,7 +1,7 @@
 {
     "683595539807207434": {
         "level": 6,
-        "exp": 5,
+        "exp": 85,
         "team": [
             {
                 "name": "エイパム",
@@ -151,6 +151,36 @@
                 "special_defense": 7,
                 "speed": 7,
                 "max_hp": 13,
+                "exp": 0
+            },
+            {
+                "name": "トゲピー",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/175.png",
+                "base_stats": {
+                    "HP": 35,
+                    "攻撃": 20,
+                    "防御": 65,
+                    "特攻": 40,
+                    "特防": 65,
+                    "素早さ": 20
+                },
+                "rarity": 1,
+                "evolve_level": null,
+                "evolves_to": "トゲチック",
+                "appear": 0,
+                "moves": [
+                    "はねる",
+                    "ゆびをふる"
+                ],
+                "shiny": false,
+                "level": 4,
+                "hp": 4,
+                "attack": 6,
+                "defense": 10,
+                "special_attack": 8,
+                "special_defense": 10,
+                "speed": 6,
+                "max_hp": 16,
                 "exp": 0
             }
         ],
