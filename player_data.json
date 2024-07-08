@@ -1,6 +1,6 @@
 {
     "683595539807207434": {
-        "level": 6,
+        "level": 7,
         "exp": 85,
         "team": [
             {
@@ -24,7 +24,7 @@
                 ],
                 "shiny": true,
                 "level": 7,
-                "hp": 24,
+                "hp": 12,
                 "attack": 14,
                 "defense": 12,
                 "special_attack": 10,
@@ -211,6 +211,36 @@
                 "special_defense": 10,
                 "speed": 6,
                 "max_hp": 16,
+                "exp": 0
+            },
+            {
+                "name": "マグマッグ",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/218.png",
+                "base_stats": {
+                    "HP": 40,
+                    "攻撃": 40,
+                    "防御": 40,
+                    "特攻": 70,
+                    "特防": 40,
+                    "素早さ": 20
+                },
+                "rarity": 1,
+                "evolve_level": 38,
+                "evolves_to": "マグカルゴ",
+                "appear": 0,
+                "moves": [
+                    "ひのこ",
+                    "いわおとし"
+                ],
+                "shiny": false,
+                "level": 6,
+                "hp": 6,
+                "attack": 9,
+                "defense": 9,
+                "special_attack": 13,
+                "special_defense": 9,
+                "speed": 7,
+                "max_hp": 20,
                 "exp": 0
             }
         ],
