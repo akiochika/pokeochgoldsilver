@@ -23,15 +23,15 @@
                     "はたく"
                 ],
                 "shiny": true,
-                "level": 8,
-                "hp": 19,
-                "attack": 16,
-                "defense": 13,
-                "special_attack": 11,
-                "special_defense": 13,
-                "speed": 18,
-                "max_hp": 26,
-                "exp": 26
+                "level": 7,
+                "hp": 24,
+                "attack": 14,
+                "defense": 12,
+                "special_attack": 10,
+                "special_defense": 12,
+                "speed": 16,
+                "max_hp": 24,
+                "exp": 150
             },
             {
                 "name": "ホーホー",
@@ -181,7 +181,7 @@
                 ],
                 "shiny": false,
                 "level": 15,
-                "exp": 112,
+                "exp": 121,
                 "hp": 42,
                 "attack": 24,
                 "defense": 22,
