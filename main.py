@@ -9,9 +9,10 @@ from discord.ext.commands import has_permissions, CheckFailure
 import time
 
 from skilllist import get_skill_damage  # 追加
-
 from flask import Flask
 from threading import Thread
+import requests
+from base64 import b64encode
 
 app = Flask('')
 
@@ -332,6 +333,45 @@ async def choose(ctx, pokemon_name: str):
     else:
         await ctx.send(f'{ctx.author.mention} は既にポケモンを持っています。')
 
+def github_write_file(content, file_path, message):
+    url = f'https://api.github.com/repos/{GITHUB_REPO}/contents/{file_path}'
+    headers = {
+        'Authorization': f'token {GITHUB_TOKEN}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        sha = response.json()['sha']
+    else:
+        sha = None
+
+    content = b64encode(content.encode()).decode()
+
+    data = {
+        'message': message,
+        'content': content,
+        'branch': GITHUB_BRANCH
+    }
+
+    if sha:
+        data['sha'] = sha
+
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code in [200, 201]:
+        print('File successfully updated.')
+    else:
+        print('Failed to update file:', response.json())
+
+# GitHubリポジトリ情報
+GITHUB_REPO = 'your-username/your-repo'
+GITHUB_BRANCH = 'main'
+PLAYER_DATA_FILE_PATH = 'path/to/player_data.json'
+CAUGHT_POKEMONS_FILE_PATH = 'path/to/caught_pokemons.json'
+
+# GitHubトークン
+GITHUB_TOKEN = 'your_github_token'
+
 def save_player_data():
     # `Message` オブジェクトを削除
     for user_id in player_data:
@@ -345,8 +385,18 @@ def save_player_data():
             if "message" in pokemon:
                 del pokemon["message"]
 
+    player_data_content = json.dumps(player_data, ensure_ascii=False, indent=4)
+    caught_pokemons_content = json.dumps(caught_pokemons, ensure_ascii=False, indent=4)
+
     with open(player_data_file, 'w') as file:
-        json.dump(player_data, file, ensure_ascii=False, indent=4)
+        file.write(player_data_content)
+
+    with open(data_file, 'w') as file:
+        file.write(caught_pokemons_content)
+
+    # GitHubにデータを書き込み
+    github_write_file(player_data_content, PLAYER_DATA_FILE_PATH, 'Update player data')
+    github_write_file(caught_pokemons_content, CAUGHT_POKEMONS_FILE_PATH, 'Update caught pokemons')
 
 # ポケモンリストの表示
 # ページ情報を保持するための辞書
@@ -413,7 +463,7 @@ async def box_next(ctx):
 @bot.command()
 async def box_back(ctx):
     user_id = str(ctx.author.id)
-    if user_id in pages and pages[user_id]["embeds"]:
+    if user_id in pages and pages[user_id]["embeds"]):
         pages[user_id]["current_page"] -= 1
         if pages[user_id]["current_page"] < 0:
             pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
