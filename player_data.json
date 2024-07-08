@@ -24,21 +24,51 @@
                 "shiny": false,
                 "level": 5,
                 "exp": 0,
-                "hp": 20,
+                "hp": 15,
                 "attack": 11,
                 "defense": 11,
                 "special_attack": 9,
                 "special_defense": 9,
                 "speed": 9,
                 "max_hp": 20
+            },
+            {
+                "name": "エイパム",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/190.png",
+                "base_stats": {
+                    "HP": 55,
+                    "攻撃": 70,
+                    "防御": 55,
+                    "特攻": 40,
+                    "特防": 55,
+                    "素早さ": 85
+                },
+                "rarity": 1,
+                "evolve_level": 32,
+                "evolves_to": "エテボース",
+                "appear": 0,
+                "moves": [
+                    "ひっかく",
+                    "はたく"
+                ],
+                "shiny": true,
+                "level": 5,
+                "hp": 5,
+                "attack": 12,
+                "defense": 10,
+                "special_attack": 9,
+                "special_defense": 10,
+                "speed": 13,
+                "max_hp": 20,
+                "exp": 0
             }
         ],
         "box": [],
         "field": []
     },
     "1178255155054002209": {
-        "level": 1,
-        "exp": 0,
+        "level": 4,
+        "exp": 22,
         "team": [
             {
                 "name": "新弥",
