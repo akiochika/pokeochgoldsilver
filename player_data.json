@@ -24,14 +24,14 @@
                 ],
                 "shiny": true,
                 "level": 8,
-                "hp": 23,
+                "hp": 19,
                 "attack": 16,
                 "defense": 13,
                 "special_attack": 11,
                 "special_defense": 13,
                 "speed": 18,
                 "max_hp": 26,
-                "exp": 16
+                "exp": 26
             },
             {
                 "name": "ホーホー",
