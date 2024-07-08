@@ -148,6 +148,7 @@ def determine_shiny():
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user.name}')
+    bot.loop.create_task(check_all_hp_zero())
 
 @bot.event
 async def on_message(message):
