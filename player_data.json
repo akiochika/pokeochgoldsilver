@@ -32,36 +32,6 @@
                 "speed": 11,
                 "max_hp": 23,
                 "exp": 0
-            },
-            {
-                "name": "ホーホー",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/163.png",
-                "base_stats": {
-                    "HP": 60,
-                    "攻撃": 30,
-                    "防御": 30,
-                    "特攻": 36,
-                    "特防": 56,
-                    "素早さ": 50
-                },
-                "rarity": 1,
-                "evolve_level": 20,
-                "evolves_to": "ヨルノズク",
-                "appear": 0,
-                "moves": [
-                    "たいあたり",
-                    "エアスラッシュ"
-                ],
-                "shiny": false,
-                "level": 6,
-                "hp": 0,
-                "attack": 8,
-                "defense": 8,
-                "special_attack": 9,
-                "special_defense": 11,
-                "speed": 11,
-                "max_hp": 23,
-                "exp": 0
             }
         ],
         "box": [
@@ -242,6 +212,36 @@
                 "speed": 16,
                 "max_hp": 24,
                 "exp": 150
+            },
+            {
+                "name": "ホーホー",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/163.png",
+                "base_stats": {
+                    "HP": 60,
+                    "攻撃": 30,
+                    "防御": 30,
+                    "特攻": 36,
+                    "特防": 56,
+                    "素早さ": 50
+                },
+                "rarity": 1,
+                "evolve_level": 20,
+                "evolves_to": "ヨルノズク",
+                "appear": 0,
+                "moves": [
+                    "たいあたり",
+                    "エアスラッシュ"
+                ],
+                "shiny": false,
+                "level": 6,
+                "hp": 0,
+                "attack": 8,
+                "defense": 8,
+                "special_attack": 9,
+                "special_defense": 11,
+                "speed": 11,
+                "max_hp": 23,
+                "exp": 0
             }
         ],
         "field": []
