@@ -150,15 +150,15 @@
                     "ころがる"
                 ],
                 "shiny": false,
-                "level": 14,
-                "exp": 527,
-                "hp": 32,
-                "attack": 22,
-                "defense": 21,
-                "special_attack": 27,
-                "special_defense": 23,
-                "speed": 27,
-                "max_hp": 40
+                "level": 15,
+                "exp": 10,
+                "hp": 42,
+                "attack": 24,
+                "defense": 22,
+                "special_attack": 29,
+                "special_defense": 24,
+                "speed": 29,
+                "max_hp": 42
             }
         ],
         "box": [],
