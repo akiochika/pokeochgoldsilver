@@ -1,6 +1,6 @@
 {
     "1259536785579573289": {
-        "message_count": 10,
+        "message_count": 0,
         "current_pokemon": {
             "name": "デルビル",
             "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png",
@@ -22,7 +22,7 @@
             ],
             "shiny": false,
             "level": 4,
-            "hp": 17,
+            "hp": 6,
             "attack": 9,
             "defense": 7,
             "special_attack": 11,
