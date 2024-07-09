@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 14,
-        "current_pokemon": null,
+        "message_count": 15,
+        "current_pokemon": {
+            "name": "ゴマゾウ",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/231.png",
+            "base_stats": {
+                "HP": 90,
+                "攻撃": 60,
+                "防御": 60,
+                "特攻": 40,
+                "特防": 40,
+                "素早さ": 40
+            },
+            "rarity": 1,
+            "evolve_level": 25,
+            "evolves_to": "ドンファン",
+            "appear": 0,
+            "moves": [
+                "ころがる",
+                "なきごえ"
+            ],
+            "shiny": false,
+            "level": 2,
+            "hp": 15,
+            "attack": 7,
+            "defense": 7,
+            "special_attack": 6,
+            "special_defense": 6,
+            "speed": 6,
+            "max_hp": 15
+        },
         "user_ids": [
             "683595539807207434",
             "683595539807207434",
