@@ -161,7 +161,8 @@ async def on_message(message):
             channel_data[channel_id] = {"message_count": 0, "current_pokemon": None, "wild_pokemon_escape_task": None, "wild_pokemon_attack_task": None, "user_ids": [], "field_pokemons": {}}
 
         channel_info = channel_data[channel_id]
-        channel_info["user_ids"].append(user_id)
+        if user_id not in channel_info["user_ids"]:
+            channel_info["user_ids"].append(user_id)
 
         if channel_info["current_pokemon"] is None:
             channel_info["message_count"] += 1
@@ -226,6 +227,7 @@ async def spawn_pokemon(channel, user_ids):
 
     channel_info["wild_pokemon_escape_task"] = bot.loop.create_task(wild_pokemon_escape(channel))
     channel_info["wild_pokemon_attack_task"] = bot.loop.create_task(wild_pokemon_attack(channel))
+    save_field_data()
 
 async def wild_pokemon_escape(channel):
     channel_id = str(channel.id)
@@ -386,7 +388,7 @@ def get_file_sha(file_path):
             "Accept": "application/vnd.github.v3+json"
         }
         response = requests.get(url, headers=headers)
-        if response.status_code == 200:
+        if (response.status_code == 200) and ("sha" in response.json()):
             return response.json()["sha"]
         return None
     except Exception as e:
@@ -445,31 +447,11 @@ def save_caught_pokemons():
     except Exception as e:
         logging.error(f"Error in save_caught_pokemons: {e}", exc_info=True)
 
-def save_field_data():
-    try:
-        cleaned_data = clean_channel_data(channel_data)
-        field_data_json = json.dumps(cleaned_data, ensure_ascii=False, indent=4)
-        with open(field_data_file, 'w') as file:
-            file.write(field_data_json)
-
-        update_github_file(FIELD_DATA_FILE_PATH, field_data_json)
-    except Exception as e:
-        logging.error(f"Error in save_field_data: {e}", exc_info=True)
-
-def load_field_data():
-    try:
-        global channel_data
-        if os.path.exists(field_data_file):
-            with open(field_data_file, 'r') as file:
-                channel_data = json.load(file)
-    except Exception as e:
-        logging.error(f"Error in load_field_data: {e}", exc_info=True)
-
 def clean_channel_data(data):
     cleaned_data = {}
     for channel_id, channel_info in data.items():
         cleaned_channel_info = channel_info.copy()
-        if cleaned_channel_info["current_pokemon"] is not None:
+        if cleaned_channel_info["current_pokemon"]:
             cleaned_channel_info["current_pokemon"] = cleaned_channel_info["current_pokemon"].copy()
             if "message" in cleaned_channel_info["current_pokemon"]:
                 del cleaned_channel_info["current_pokemon"]["message"]
@@ -490,6 +472,26 @@ def clean_channel_data(data):
 
         cleaned_data[channel_id] = cleaned_channel_info
     return cleaned_data
+
+def save_field_data():
+    try:
+        cleaned_data = clean_channel_data(channel_data)
+        field_data_json = json.dumps(cleaned_data, ensure_ascii=False, indent=4)
+        with open(field_data_file, 'w') as file:
+            file.write(field_data_json)
+
+        update_github_file(FIELD_DATA_FILE_PATH, field_data_json)
+    except Exception as e:
+        logging.error(f"Error in save_field_data: {e}", exc_info=True)
+
+def load_field_data():
+    try:
+        global channel_data
+        if os.path.exists(field_data_file):
+            with open(field_data_file, 'r') as file:
+                channel_data = json.load(file)
+    except Exception as e:
+        logging.error(f"Error in load_field_data: {e}", exc_info=True)
 
 pages = {}
 
@@ -595,7 +597,6 @@ async def deposit(ctx, pokemon_name: str):
                 player_data[user_id]["box"].append(pokemon)
                 del player_data[user_id]["team"][i]
                 save_player_data()
-                save_field_data()
                 await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスに預けました。")
                 await heal_pokemon_in_box(user_id, pokemon)
                 return
@@ -603,7 +604,6 @@ async def deposit(ctx, pokemon_name: str):
         await ctx.send(f"{ctx.author.mention} {pokemon_name} は手持ちにいません。")
     except Exception as e:
         logging.error(f"Error in deposit command: {e}", exc_info=True)
-
 
 @bot.command()
 async def withdraw(ctx, pokemon_name: str):
@@ -647,7 +647,6 @@ async def withdraw(ctx, pokemon_name: str):
 
         player_data[user_id]["box"].remove(selected_pokemon)
         save_player_data()
-        save_field_data()
         await ctx.send(f"{ctx.author.mention} {pokemon_name} をボックスから引き出しました。")
     except Exception as e:
         logging.error(f"Error in withdraw command: {e}", exc_info=True)
@@ -657,7 +656,6 @@ async def heal_pokemon_in_box(user_id, pokemon):
         await asyncio.sleep(600)
         pokemon["hp"] = pokemon["max_hp"]
         save_player_data()
-        save_field_data()
     except Exception as e:
         logging.error(f"Error in heal_pokemon_in_box: {e}", exc_info=True)
 
@@ -670,7 +668,6 @@ async def auto_return_to_hand(user_id, channel_id, pokemon_name, delay):
             if pokemon and not any(channel_info.get("current_pokemon") for channel_info in channel_data.values()):
                 field.remove(pokemon)
                 save_player_data()
-                save_field_data()
                 member = bot.get_user(int(user_id))
                 if member:
                     await member.send(f'{pokemon_name} がフィールドに出続けたので自動的に手持ちに戻りました。')
@@ -724,7 +721,6 @@ async def restore_hp(user_id):
             for pokemon in player_data[user_id]["team"]:
                 pokemon["hp"] = pokemon["max_hp"]
             save_player_data()
-            save_field_data()
     except Exception as e:
         logging.error(f"Error in restore_hp: {e}", exc_info=True)
 
@@ -755,7 +751,6 @@ async def return_pokemon(ctx, pokemon_name: str):
             if pokemon:
                 field.remove(pokemon)
                 await ctx.send(f"{pokemon['name']} を手持ちに戻しました。")
-                save_player_data()
                 save_field_data()
     except Exception as e:
         logging.error(f"Error in return_pokemon command: {e}", exc_info=True)
@@ -770,7 +765,6 @@ async def rename(ctx, old_name: str, new_name: str):
             if pokemon:
                 pokemon["name"] = new_name
                 await ctx.send(f"{old_name} の名前を {new_name} に変更しました。")
-                save_player_data()
                 save_field_data()
     except Exception as e:
         logging.error(f"Error in rename command: {e}", exc_info=True)
@@ -798,7 +792,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
             hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
 
             if channel_info["current_pokemon"]["hp"] == 0:
-                if channel_info["current_pokemon"]["message"]:
+                if "message" in channel_info["current_pokemon"] and channel_info["current_pokemon"]["message"]:
                     try:
                         await channel_info["current_pokemon"]["message"].delete()
                     except discord.errors.NotFound:
@@ -812,7 +806,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
                 save_player_data()
                 save_field_data()
             else:
-                if channel_info["current_pokemon"]["message"]:
+                if "message" in channel_info["current_pokemon"] and channel_info["current_pokemon"]["message"]:
                     try:
                         await channel_info["current_pokemon"]["message"].delete()
                     except discord.errors.NotFound:
@@ -878,7 +872,7 @@ async def check_level_up(user_id):
                         pokemon["exp"] = 0
                     pokemon.update(calculate_pokemon_level(pokemon["base_stats"], pokemon["level"]))
                     pokemon["max_hp"] = pokemon["hp"]
-                    await check_evolution(ctx, user_id, pokemon)
+                    await check_evolution(user_id, pokemon)
     except Exception as e:
         logging.error(f"Error in check_level_up: {e}", exc_info=True)
 
@@ -916,7 +910,6 @@ async def give_exp_on_defeat(ctx, pokemon_level):
                     if member:
                         await ctx.send(f'{member.mention} のポケモンが {exp} の経験値を獲得しました！')
             save_player_data()
-            save_field_data()
     except Exception as e:
         logging.error(f"Error in give_exp_on_defeat: {e}", exc_info=True)
 
@@ -933,7 +926,6 @@ async def check_evolution(ctx, user_id, pokemon):
                 pokemon["shiny"] = shiny
                 await ctx.send(f'{ctx.author.mention} の {original_name} が {pokemon["name"]} に進化しました！')
                 save_player_data()
-                save_field_data()
     except Exception as e:
         logging.error(f"Error in check_evolution: {e}", exc_info=True)
 
@@ -1069,7 +1061,6 @@ async def reset_player(ctx, member: discord.Member):
         if user_id in player_data:
             del player_data[user_id]
             save_player_data()
-            save_field_data()
             await ctx.send(f'{member.mention} のプレイヤーデータをリセットしました。')
         else:
             await ctx.send(f'{member.mention} のプレイヤーデータは見つかりませんでした。')
