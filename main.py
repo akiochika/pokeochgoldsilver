@@ -273,6 +273,8 @@ async def wild_pokemon_attack(channel):
             if not channel_info["field_pokemons"][target_user_id]:
                 continue
             target_pokemon = random.choice(channel_info["field_pokemons"][target_user_id])
+            if attacker.get("attack") is None or target_pokemon.get("defense") is None:
+                continue  # Skip if stats are None
             damage = get_skill_damage(move, attacker, target_pokemon)
             target_pokemon["hp"] = max(0, target_pokemon["hp"] - damage)
             hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
@@ -1014,7 +1016,7 @@ async def reset_error(ctx, error):
             await ctx.send("このコマンドを使用するには管理者権限が必要です。")
     except Exception as e:
         logging.error(f"Error in reset_error: {e}", exc_info=True)
-
+        
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def spawn(ctx):
