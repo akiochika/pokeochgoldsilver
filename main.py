@@ -386,7 +386,7 @@ def get_file_sha(file_path):
             "Accept": "application/vnd.github.v3+json"
         }
         response = requests.get(url, headers=headers)
-        if response.status_code == 200
+        if response.status_code == 200:
             return response.json()["sha"]
         return None
     except Exception as e:
