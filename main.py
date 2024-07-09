@@ -273,11 +273,6 @@ async def wild_pokemon_attack(channel):
             if not channel_info["field_pokemons"][target_user_id]:
                 continue
             target_pokemon = random.choice(channel_info["field_pokemons"][target_user_id])
-
-            if None in [attacker["level"], move, attacker, target_pokemon]:
-                logging.error(f"Invalid attacker or target data: {attacker}, {target_pokemon}")
-                continue
-            
             damage = get_skill_damage(move, attacker, target_pokemon)
             target_pokemon["hp"] = max(0, target_pokemon["hp"] - damage)
             hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
@@ -577,7 +572,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -841,7 +836,7 @@ async def all_data_reset(ctx):
 
         with open(player_data_file, 'w') as file:
             json.dump(player_data, file, ensure_ascii=False, indent=4)
-        
+
         with open(field_data_file, 'w') as file:
             json.dump(channel_data, file, ensure_ascii=False, indent=4)
 
