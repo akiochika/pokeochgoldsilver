@@ -572,7 +572,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -840,7 +840,7 @@ async def all_data_reset(ctx):
         with open(field_data_file, 'w') as file:
             json.dump(channel_data, file, ensure_ascii=False, indent=4)
 
-        await ctx.send("全プレイヤーのデータとフィールドデータを初期化しました。")
+        await ctx.send("全プレイヤーのデータを初期化しました。")
     except Exception as e:
         logging.error(f"Error in all_data_reset command: {e}", exc_info=True)
 
@@ -1014,7 +1014,7 @@ async def reset_error(ctx, error):
             await ctx.send("このコマンドを使用するには管理者権限が必要です。")
     except Exception as e:
         logging.error(f"Error in reset_error: {e}", exc_info=True)
-        
+
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def spawn(ctx):
