@@ -2,7 +2,37 @@
     "683595539807207434": {
         "level": 1,
         "exp": 0,
-        "team": [],
+        "team": [
+            {
+                "name": "ワニノコ",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png",
+                "base_stats": {
+                    "HP": 50,
+                    "攻撃": 65,
+                    "防御": 64,
+                    "特攻": 44,
+                    "特防": 48,
+                    "素早さ": 43
+                },
+                "rarity": 1,
+                "evolve_level": 18,
+                "evolves_to": "アリゲイツ",
+                "appear": 1,
+                "moves": [
+                    "たいあたり"
+                ],
+                "shiny": false,
+                "level": 5,
+                "exp": 0,
+                "hp": 20,
+                "attack": 11,
+                "defense": 11,
+                "special_attack": 9,
+                "special_defense": 9,
+                "speed": 9,
+                "max_hp": 20
+            }
+        ],
         "box": [],
         "field": []
     }
