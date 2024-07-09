@@ -7,7 +7,7 @@ import asyncio
 from datetime import timedelta
 import base64
 import requests
-from skilllist import get_skill_damage
+from skilllist import get_skill_damage  # Ensure this is correctly imported
 from threading import Thread
 from flask import Flask
 import logging
@@ -574,7 +574,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
@@ -1016,7 +1016,7 @@ async def reset_error(ctx, error):
             await ctx.send("このコマンドを使用するには管理者権限が必要です。")
     except Exception as e:
         logging.error(f"Error in reset_error: {e}", exc_info=True)
-        
+
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def spawn(ctx):
