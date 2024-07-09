@@ -58,7 +58,7 @@ async def on_message(message):
         return
     channel_id = str(message.channel.id)
     user_id = str(message.author.id)
-    channel_info = data["field_data"].setdefault(channel_id, {"message_count": 0, "current_pokemon": None, "user_ids": []})
+    channel_info = data["field_data"].setdefault(channel_id, {"message_count": 0, "current_pokemon": None, "user_ids": [], "field_pokemons": {}})
 
     if user_id not in channel_info["user_ids"]:
         channel_info["user_ids"].append(user_id)
@@ -94,6 +94,52 @@ async def spawn_pokemon(channel, user_ids):
     embed = discord.Embed(title=f"野生の{'色違い ' if shiny else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
     embed.set_image(url=channel_info["current_pokemon"]["image"])
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
+
+    bot.loop.create_task(wild_pokemon_escape(channel))
+    bot.loop.create_task(wild_pokemon_attack(channel))
+
+async def wild_pokemon_escape(channel):
+    await asyncio.sleep(60)
+    channel_id = str(channel.id)
+    channel_info = data["field_data"][channel_id]
+
+    if channel_info["current_pokemon"]:
+        await channel_info["current_pokemon"]["message"].delete()
+        await channel.send(f"{channel_info['current_pokemon']['name']} は逃げてしまった！")
+        channel_info["current_pokemon"] = None
+        save_data()
+
+async def wild_pokemon_attack(channel):
+    channel_id = str(channel.id)
+    channel_info = data["field_data"][channel_id]
+
+    while channel_info["current_pokemon"]:
+        await asyncio.sleep(random.randint(5, 10))
+        if not channel_info["field_pokemons"]:
+            continue
+
+        target_user_id = random.choice(list(channel_info["field_pokemons"].keys()))
+        target_pokemon = random.choice(channel_info["field_pokemons"][target_user_id])
+
+        attacker = channel_info["current_pokemon"]
+        move = random.choice(attacker["moves"])
+        damage = get_skill_damage(move, attacker, target_pokemon)
+
+        target_pokemon["hp"] = max(0, target_pokemon["hp"] - damage)
+        hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
+
+        embed = discord.Embed(title=f"{attacker['name']} は {target_pokemon['name']} に {move} を使った！")
+        embed.set_image(url=target_pokemon["image"])
+        embed.add_field(name="ダメージ", value=f"{damage}", inline=False)
+        embed.add_field(name="HP", value=hp_bar, inline=False)
+        await channel.send(embed=embed)
+
+        if target_pokemon["hp"] == 0:
+            await channel.send(f"{target_pokemon['name']} は倒れた！")
+            channel_info["field_pokemons"][target_user_id].remove(target_pokemon)
+            if not channel_info["field_pokemons"][target_user_id]:
+                del channel_info["field_pokemons"][target_user_id]
+            save_data()
 
 @bot.command()
 async def start(ctx):
