@@ -1,1 +1,38 @@
-{}
+{
+    "1259536785579573289": {
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "ヒマナッツ",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/191.png",
+            "base_stats": {
+                "HP": 30,
+                "攻撃": 30,
+                "防御": 30,
+                "特攻": 30,
+                "特防": 30,
+                "素早さ": 30
+            },
+            "rarity": 1,
+            "evolve_level": 25,
+            "evolves_to": "キマワリ",
+            "appear": 0,
+            "moves": [
+                "たいあたり",
+                "タネマシンガン"
+            ],
+            "shiny": false,
+            "level": 4,
+            "hp": 16,
+            "attack": 7,
+            "defense": 7,
+            "special_attack": 7,
+            "special_defense": 7,
+            "speed": 7,
+            "max_hp": 16
+        },
+        "user_ids": [
+            "683595539807207434"
+        ],
+        "field_pokemons": {}
+    }
+}
