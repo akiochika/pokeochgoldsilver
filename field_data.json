@@ -2,33 +2,33 @@
     "1259536785579573289": {
         "message_count": 10,
         "current_pokemon": {
-            "name": "レディバ",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+            "name": "ピチュー",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png",
             "base_stats": {
-                "HP": 40,
-                "攻撃": 20,
-                "防御": 30,
-                "特攻": 40,
-                "特防": 80,
-                "素早さ": 55
+                "HP": 20,
+                "攻撃": 40,
+                "防御": 15,
+                "特攻": 35,
+                "特防": 35,
+                "素早さ": 60
             },
             "rarity": 1,
-            "evolve_level": 18,
-            "evolves_to": "レディアン",
+            "evolve_level": null,
+            "evolves_to": "ピカチュウ",
             "appear": 0,
             "moves": [
-                "たいあたり",
-                "ぎんいろのかぜ"
+                "でんきショック",
+                "てんしのキッス"
             ],
             "shiny": false,
             "level": 3,
-            "hp": 15,
-            "attack": 6,
-            "defense": 6,
+            "hp": 14,
+            "attack": 7,
+            "defense": 5,
             "special_attack": 7,
-            "special_defense": 9,
+            "special_defense": 7,
             "speed": 8,
-            "max_hp": 15
+            "max_hp": 14
         },
         "user_ids": [
             "683595539807207434"
