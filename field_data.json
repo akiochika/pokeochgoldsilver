@@ -1,71 +1,12 @@
 {
     "1259536785579573289": {
         "message_count": 10,
-        "current_pokemon": {
-            "name": "テッポウオ",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/223.png",
-            "base_stats": {
-                "HP": 35,
-                "攻撃": 65,
-                "防御": 35,
-                "特攻": 65,
-                "特防": 35,
-                "素早さ": 65
-            },
-            "rarity": 1,
-            "evolve_level": 25,
-            "evolves_to": "オクタン",
-            "appear": 0,
-            "moves": [
-                "みずでっぽう",
-                "あわ"
-            ],
-            "shiny": false,
-            "level": 5,
-            "hp": 7,
-            "attack": 11,
-            "defense": 8,
-            "special_attack": 11,
-            "special_defense": 8,
-            "speed": 11,
-            "max_hp": 18
-        },
+        "current_pokemon": null,
         "user_ids": [
             "683595539807207434"
         ],
         "field_pokemons": {
-            "683595539807207434": [
-                {
-                    "name": "エイパム",
-                    "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/190.png",
-                    "base_stats": {
-                        "HP": 55,
-                        "攻撃": 70,
-                        "防御": 55,
-                        "特攻": 40,
-                        "特防": 55,
-                        "素早さ": 85
-                    },
-                    "rarity": 1,
-                    "evolve_level": 32,
-                    "evolves_to": "エテボース",
-                    "appear": 0,
-                    "moves": [
-                        "ひっかく",
-                        "はたく"
-                    ],
-                    "shiny": true,
-                    "level": 9,
-                    "hp": 28,
-                    "attack": 17,
-                    "defense": 14,
-                    "special_attack": 12,
-                    "special_defense": 14,
-                    "speed": 20,
-                    "max_hp": 28,
-                    "exp": 1
-                }
-            ]
+            "683595539807207434": []
         }
     }
 }
