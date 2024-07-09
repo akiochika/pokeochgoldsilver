@@ -222,7 +222,7 @@ async def spawn_pokemon(channel, user_ids):
     embed.add_field(name="HP", value=hp_bar, inline=False)
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
 
-    if channel_info["wild_pokemon_escape_task"] is not None and not channel_info["wild_pokemon_escape_task"].done():
+    if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
         channel_info["wild_pokemon_escape_task"].cancel()
 
     channel_info["wild_pokemon_escape_task"] = bot.loop.create_task(wild_pokemon_escape(channel))
@@ -273,6 +273,11 @@ async def wild_pokemon_attack(channel):
             if not channel_info["field_pokemons"][target_user_id]:
                 continue
             target_pokemon = random.choice(channel_info["field_pokemons"][target_user_id])
+
+            if None in [attacker["level"], move, attacker, target_pokemon]:
+                logging.error(f"Invalid attacker or target data: {attacker}, {target_pokemon}")
+                continue
+            
             damage = get_skill_damage(move, attacker, target_pokemon)
             target_pokemon["hp"] = max(0, target_pokemon["hp"] - damage)
             hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
@@ -840,7 +845,7 @@ async def all_data_reset(ctx):
         with open(field_data_file, 'w') as file:
             json.dump(channel_data, file, ensure_ascii=False, indent=4)
 
-        await ctx.send("全プレイヤーのデータを初期化しました。")
+        await ctx.send("全プレイヤーのデータとフィールドデータを初期化しました。")
     except Exception as e:
         logging.error(f"Error in all_data_reset command: {e}", exc_info=True)
 
