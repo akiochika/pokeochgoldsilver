@@ -2,32 +2,33 @@
     "1259536785579573289": {
         "message_count": 10,
         "current_pokemon": {
-            "name": "ピィ",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/173.png",
+            "name": "レディバ",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
             "base_stats": {
-                "HP": 50,
-                "攻撃": 25,
-                "防御": 28,
-                "特攻": 45,
-                "特防": 55,
-                "素早さ": 15
+                "HP": 40,
+                "攻撃": 20,
+                "防御": 30,
+                "特攻": 40,
+                "特防": 80,
+                "素早さ": 55
             },
             "rarity": 1,
-            "evolve_level": null,
-            "evolves_to": "ピッピ",
+            "evolve_level": 18,
+            "evolves_to": "レディアン",
             "appear": 0,
             "moves": [
-                "ゆびをふる"
+                "たいあたり",
+                "ぎんいろのかぜ"
             ],
             "shiny": false,
-            "level": 1,
-            "hp": 12,
-            "attack": 5,
-            "defense": 5,
-            "special_attack": 5,
-            "special_defense": 6,
-            "speed": 5,
-            "max_hp": 12
+            "level": 3,
+            "hp": 15,
+            "attack": 6,
+            "defense": 6,
+            "special_attack": 7,
+            "special_defense": 9,
+            "speed": 8,
+            "max_hp": 15
         },
         "user_ids": [
             "683595539807207434"
