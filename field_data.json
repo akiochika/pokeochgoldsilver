@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "ヤミカラス",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/198.png",
+            "base_stats": {
+                "HP": 60,
+                "攻撃": 85,
+                "防御": 42,
+                "特攻": 85,
+                "特防": 42,
+                "素早さ": 91
+            },
+            "rarity": 1,
+            "evolve_level": null,
+            "evolves_to": "ドンカラス",
+            "appear": 0,
+            "moves": [
+                "つじぎり",
+                "つばめがえし"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 12,
+            "attack": 6,
+            "defense": 5,
+            "special_attack": 6,
+            "special_defense": 5,
+            "speed": 6,
+            "max_hp": 12
+        },
         "user_ids": [
             "683595539807207434"
         ],
