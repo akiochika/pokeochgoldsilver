@@ -1,1 +1,38 @@
-{}
+{
+    "1259536785579573289": {
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "ヒメグマ",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/216.png",
+            "base_stats": {
+                "HP": 60,
+                "攻撃": 80,
+                "防御": 50,
+                "特攻": 50,
+                "特防": 50,
+                "素早さ": 40
+            },
+            "rarity": 1,
+            "evolve_level": 30,
+            "evolves_to": "リングマ",
+            "appear": 0,
+            "moves": [
+                "はたく",
+                "なきごえ"
+            ],
+            "shiny": false,
+            "level": 5,
+            "hp": 21,
+            "attack": 13,
+            "defense": 10,
+            "special_attack": 10,
+            "special_defense": 10,
+            "speed": 9,
+            "max_hp": 21
+        },
+        "user_ids": [
+            "683595539807207434"
+        ],
+        "field_pokemons": {}
+    }
+}
