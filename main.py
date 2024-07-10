@@ -1102,7 +1102,7 @@ async def periodic_save_field_data():
             await asyncio.sleep(600)  # 10分ごとに保存
             save_field_data()
     except Exception as e:
-        logging.error(f"Error in periodic_save_field_data: {e}", exc_info=True)
+        logging.error(f"Error in periodic_save_field_data: {e}", excinfo=True)
 
 async def main():
     async with bot:
