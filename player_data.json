@@ -33,36 +33,6 @@
                 "max_hp": 20
             },
             {
-                "name": "レディバ",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
-                "base_stats": {
-                    "HP": 40,
-                    "攻撃": 20,
-                    "防御": 30,
-                    "特攻": 40,
-                    "特防": 80,
-                    "素早さ": 55
-                },
-                "rarity": 1,
-                "evolve_level": 18,
-                "evolves_to": "レディアン",
-                "appear": 0,
-                "moves": [
-                    "たいあたり",
-                    "ぎんいろのかぜ"
-                ],
-                "shiny": false,
-                "level": 1,
-                "hp": 2,
-                "attack": 5,
-                "defense": 5,
-                "special_attack": 5,
-                "special_defense": 6,
-                "speed": 6,
-                "max_hp": 11,
-                "exp": 0
-            },
-            {
                 "name": "デルビル",
                 "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png",
                 "base_stats": {
@@ -93,7 +63,38 @@
                 "exp": 0
             }
         ],
-        "box": [],
+        "box": [
+            {
+                "name": "レディバ",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/165.png",
+                "base_stats": {
+                    "HP": 40,
+                    "攻撃": 20,
+                    "防御": 30,
+                    "特攻": 40,
+                    "特防": 80,
+                    "素早さ": 55
+                },
+                "rarity": 1,
+                "evolve_level": 18,
+                "evolves_to": "レディアン",
+                "appear": 0,
+                "moves": [
+                    "たいあたり",
+                    "ぎんいろのかぜ"
+                ],
+                "shiny": false,
+                "level": 1,
+                "hp": 2,
+                "attack": 5,
+                "defense": 5,
+                "special_attack": 5,
+                "special_defense": 6,
+                "speed": 6,
+                "max_hp": 11,
+                "exp": 0
+            }
+        ],
         "field": []
     }
 }
