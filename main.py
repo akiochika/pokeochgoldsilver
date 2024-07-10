@@ -594,7 +594,7 @@ async def deposit(ctx, pokemon_name: str):
             await ctx.send(f"{ctx.author.mention} 手持ちと場にいるポケモンが少なすぎます。")
             return
 
-        for i, pokemon in enumerate(player_data[user_id]["team"]:
+        for i, pokemon in enumerate(player_data[user_id]["team"]):
             if pokemon["name"].lower() == pokemon_name.lower():
                 player_data[user_id]["box"].append(pokemon)
                 del player_data[user_id]["team"][i]
