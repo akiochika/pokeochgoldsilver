@@ -1,70 +1,38 @@
 {
     "1259536785579573289": {
-        "message_count": 11,
+        "message_count": 10,
         "current_pokemon": {
-            "name": "メリープ",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png",
+            "name": "ムチュール",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png",
             "base_stats": {
-                "HP": 55,
-                "攻撃": 40,
-                "防御": 40,
-                "特攻": 65,
-                "特防": 45,
-                "素早さ": 35
+                "HP": 45,
+                "攻撃": 30,
+                "防御": 15,
+                "特攻": 85,
+                "特防": 65,
+                "素早さ": 65
             },
             "rarity": 1,
-            "evolve_level": 15,
-            "evolves_to": "モココ",
+            "evolve_level": 30,
+            "evolves_to": "ルージュラ",
             "appear": 0,
             "moves": [
-                "でんきショック",
-                "ひかりのかべ"
+                "れいとうビーム",
+                "こなゆき"
             ],
             "shiny": false,
-            "level": 2,
-            "hp": 7,
-            "attack": 6,
-            "defense": 6,
-            "special_attack": 7,
+            "level": 1,
+            "hp": 11,
+            "attack": 5,
+            "defense": 5,
+            "special_attack": 6,
             "special_defense": 6,
             "speed": 6,
-            "max_hp": 14
+            "max_hp": 11
         },
         "user_ids": [
             "683595539807207434"
         ],
-        "field_pokemons": {
-            "683595539807207434": [
-                {
-                    "name": "ワニノコ",
-                    "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png",
-                    "base_stats": {
-                        "HP": 50,
-                        "攻撃": 65,
-                        "防御": 64,
-                        "特攻": 44,
-                        "特防": 48,
-                        "素早さ": 43
-                    },
-                    "rarity": 1,
-                    "evolve_level": 18,
-                    "evolves_to": "アリゲイツ",
-                    "appear": 1,
-                    "moves": [
-                        "たいあたり"
-                    ],
-                    "shiny": false,
-                    "level": 5,
-                    "exp": 10,
-                    "hp": 15,
-                    "attack": 11,
-                    "defense": 11,
-                    "special_attack": 9,
-                    "special_defense": 9,
-                    "speed": 9,
-                    "max_hp": 20
-                }
-            ]
-        }
+        "field_pokemons": {}
     }
 }
