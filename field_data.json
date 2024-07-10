@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 1,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "カポエラー",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png",
+            "base_stats": {
+                "HP": 50,
+                "攻撃": 95,
+                "防御": 95,
+                "特攻": 35,
+                "特防": 110,
+                "素早さ": 70
+            },
+            "rarity": 1,
+            "evolve_level": null,
+            "evolves_to": null,
+            "appear": 0,
+            "moves": [
+                "きあいパンチ",
+                "じごくぐるま"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 12,
+            "attack": 6,
+            "defense": 6,
+            "special_attack": 5,
+            "special_defense": 7,
+            "speed": 6,
+            "max_hp": 12
+        },
         "user_ids": [
             "683595539807207434"
         ],
