@@ -31,7 +31,9 @@
                 "special_defense": 9,
                 "speed": 9,
                 "max_hp": 20
-            },
+            }
+        ],
+        "box": [
             {
                 "name": "ムチュール",
                 "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png",
@@ -63,7 +65,6 @@
                 "exp": 0
             }
         ],
-        "box": [],
         "field": []
     }
 }
