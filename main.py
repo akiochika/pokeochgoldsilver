@@ -942,22 +942,30 @@ async def catch(ctx, pokemon_name: str):
         channel_id = str(ctx.channel.id)
         channel_info = channel_data[channel_id]
 
+        # Check if there's a current wild Pokémon in the channel and if the name matches
         if channel_info["current_pokemon"] and pokemon_name.lower() == channel_info["current_pokemon"]['name'].lower():
             capture_chance = calculate_capture_chance(channel_info["current_pokemon"], channel_info["current_pokemon"]["hp"])
+            
+            # Attempt to catch the Pokémon based on capture chance
             if random.randint(1, 100) <= capture_chance:
                 if user_id not in caught_pokemons:
                     caught_pokemons[user_id] = []
                 if user_id not in player_data:
                     player_data[user_id] = {"level": 1, "exp": 0, "team": [], "box": [], "field": []}
+
                 current_pokemon_copy = channel_info["current_pokemon"].copy()
                 current_pokemon_copy["exp"] = 0
                 current_pokemon_copy["shiny"] = channel_info["current_pokemon"]["shiny"]
+
+                # Add the Pokémon to the user's team or box
                 if len(player_data[user_id]["team"]) < 3:
                     player_data[user_id]["team"].append(current_pokemon_copy)
                 else:
                     player_data[user_id]["box"].append(current_pokemon_copy)
+
                 caught_pokemons[user_id].append(current_pokemon_copy)
 
+                # Clean up messages in the caught Pokémon data
                 for pokemon in caught_pokemons[user_id]:
                     if "message" in pokemon:
                         del pokemon["message"]
@@ -968,6 +976,7 @@ async def catch(ctx, pokemon_name: str):
                     if "message" in pokemon:
                         del pokemon["message"]
 
+                # Save the updated data
                 with open(data_file, 'w') as file:
                     json.dump(caught_pokemons, file, ensure_ascii=False, indent=4)
                 with open(player_data_file, 'w') as file:
@@ -977,6 +986,7 @@ async def catch(ctx, pokemon_name: str):
                 await ctx.send(f'{ctx.author.mention} が {"色違い " if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
                 await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])
                 channel_info["current_pokemon"] = None
+
                 if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                     channel_info["wild_pokemon_escape_task"].cancel()
 
