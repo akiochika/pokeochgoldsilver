@@ -1,12 +1,43 @@
 {
     "1259536785579573289": {
-        "message_count": 2,
+        "message_count": 4,
         "current_pokemon": null,
         "user_ids": [
             "683595539807207434"
         ],
         "field_pokemons": {
-            "683595539807207434": []
+            "683595539807207434": [
+                {
+                    "name": "エレキッド",
+                    "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png",
+                    "base_stats": {
+                        "HP": 45,
+                        "攻撃": 63,
+                        "防御": 37,
+                        "特攻": 65,
+                        "特防": 55,
+                        "素早さ": 95
+                    },
+                    "rarity": 1,
+                    "evolve_level": 30,
+                    "evolves_to": "エレブー",
+                    "appear": 0,
+                    "moves": [
+                        "でんきショック",
+                        "かみなりパンチ"
+                    ],
+                    "shiny": false,
+                    "level": 4,
+                    "hp": 3,
+                    "attack": 10,
+                    "defense": 7,
+                    "special_attack": 10,
+                    "special_defense": 9,
+                    "speed": 12,
+                    "max_hp": 17,
+                    "exp": 0
+                }
+            ]
         }
     }
 }
