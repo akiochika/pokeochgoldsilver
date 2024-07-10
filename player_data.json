@@ -1,6 +1,6 @@
 {
     "683595539807207434": {
-        "level": 1,
+        "level": 2,
         "exp": 0,
         "team": [
             {
@@ -24,13 +24,43 @@
                 "shiny": false,
                 "level": 5,
                 "exp": 0,
-                "hp": 20,
+                "hp": 18,
                 "attack": 11,
                 "defense": 11,
                 "special_attack": 9,
                 "special_defense": 9,
                 "speed": 9,
                 "max_hp": 20
+            },
+            {
+                "name": "ムチュール",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/238.png",
+                "base_stats": {
+                    "HP": 45,
+                    "攻撃": 30,
+                    "防御": 15,
+                    "特攻": 85,
+                    "特防": 65,
+                    "素早さ": 65
+                },
+                "rarity": 1,
+                "evolve_level": 30,
+                "evolves_to": "ルージュラ",
+                "appear": 0,
+                "moves": [
+                    "れいとうビーム",
+                    "こなゆき"
+                ],
+                "shiny": false,
+                "level": 1,
+                "hp": 2,
+                "attack": 5,
+                "defense": 5,
+                "special_attack": 6,
+                "special_defense": 6,
+                "speed": 6,
+                "max_hp": 11,
+                "exp": 0
             }
         ],
         "box": [],
