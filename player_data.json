@@ -1,6 +1,6 @@
 {
     "683595539807207434": {
-        "level": 1,
+        "level": 2,
         "exp": 0,
         "team": [
             {
@@ -31,6 +31,35 @@
                 "special_defense": 9,
                 "speed": 9,
                 "max_hp": 20
+            },
+            {
+                "name": "ピィ",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/173.png",
+                "base_stats": {
+                    "HP": 50,
+                    "攻撃": 25,
+                    "防御": 28,
+                    "特攻": 45,
+                    "特防": 55,
+                    "素早さ": 15
+                },
+                "rarity": 1,
+                "evolve_level": null,
+                "evolves_to": "ピッピ",
+                "appear": 0,
+                "moves": [
+                    "ゆびをふる"
+                ],
+                "shiny": false,
+                "level": 1,
+                "hp": 3,
+                "attack": 5,
+                "defense": 5,
+                "special_attack": 5,
+                "special_defense": 6,
+                "speed": 5,
+                "max_hp": 12,
+                "exp": 0
             }
         ],
         "box": [],
