@@ -1,70 +1,9 @@
 {
     "683595539807207434": {
-        "level": 2,
+        "level": 1,
         "exp": 0,
-        "team": [
-            {
-                "name": "ワニノコ",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png",
-                "base_stats": {
-                    "HP": 50,
-                    "攻撃": 65,
-                    "防御": 64,
-                    "特攻": 44,
-                    "特防": 48,
-                    "素早さ": 43
-                },
-                "rarity": 1,
-                "evolve_level": 18,
-                "evolves_to": "アリゲイツ",
-                "appear": 1,
-                "moves": [
-                    "たいあたり"
-                ],
-                "shiny": false,
-                "level": 5,
-                "exp": 0,
-                "hp": 16,
-                "attack": 11,
-                "defense": 11,
-                "special_attack": 9,
-                "special_defense": 9,
-                "speed": 9,
-                "max_hp": 20
-            }
-        ],
-        "box": [
-            {
-                "name": "ムウマ",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/200.png",
-                "base_stats": {
-                    "HP": 60,
-                    "攻撃": 60,
-                    "防御": 60,
-                    "特攻": 85,
-                    "特防": 85,
-                    "素早さ": 85
-                },
-                "rarity": 1,
-                "evolve_level": null,
-                "evolves_to": "ムウマージ",
-                "appear": 0,
-                "moves": [
-                    "シャドーボール",
-                    "おにび"
-                ],
-                "shiny": false,
-                "level": 1,
-                "hp": 5,
-                "attack": 6,
-                "defense": 6,
-                "special_attack": 6,
-                "special_defense": 6,
-                "speed": 6,
-                "max_hp": 12,
-                "exp": 0
-            }
-        ],
+        "team": [],
+        "box": [],
         "field": []
     }
 }
