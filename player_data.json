@@ -1,68 +1,8 @@
 {
     "683595539807207434": {
-        "level": 2,
+        "level": 1,
         "exp": 0,
-        "team": [
-            {
-                "name": "ワニノコ",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png",
-                "base_stats": {
-                    "HP": 50,
-                    "攻撃": 65,
-                    "防御": 64,
-                    "特攻": 44,
-                    "特防": 48,
-                    "素早さ": 43
-                },
-                "rarity": 1,
-                "evolve_level": 18,
-                "evolves_to": "アリゲイツ",
-                "appear": 1,
-                "moves": [
-                    "たいあたり"
-                ],
-                "shiny": false,
-                "level": 5,
-                "exp": 0,
-                "hp": 20,
-                "attack": 11,
-                "defense": 11,
-                "special_attack": 9,
-                "special_defense": 9,
-                "speed": 9,
-                "max_hp": 20
-            },
-            {
-                "name": "オタチ",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png",
-                "base_stats": {
-                    "HP": 35,
-                    "攻撃": 46,
-                    "防御": 34,
-                    "特攻": 35,
-                    "特防": 45,
-                    "素早さ": 20
-                },
-                "rarity": 1,
-                "evolve_level": 15,
-                "evolves_to": "オオタチ",
-                "appear": 0,
-                "moves": [
-                    "たいあたり",
-                    "かみつく"
-                ],
-                "shiny": false,
-                "level": 1,
-                "hp": 2,
-                "attack": 5,
-                "defense": 5,
-                "special_attack": 5,
-                "special_defense": 5,
-                "speed": 5,
-                "max_hp": 11,
-                "exp": 0
-            }
-        ],
+        "team": [],
         "box": [],
         "field": []
     }
