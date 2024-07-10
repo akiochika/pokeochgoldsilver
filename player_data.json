@@ -1,6 +1,6 @@
 {
     "683595539807207434": {
-        "level": 2,
+        "level": 3,
         "exp": 0,
         "team": [
             {
@@ -24,7 +24,7 @@
                 "shiny": false,
                 "level": 5,
                 "exp": 0,
-                "hp": 15,
+                "hp": 12,
                 "attack": 11,
                 "defense": 11,
                 "special_attack": 9,
@@ -60,6 +60,36 @@
                 "special_defense": 6,
                 "speed": 6,
                 "max_hp": 11,
+                "exp": 0
+            },
+            {
+                "name": "デルビル",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png",
+                "base_stats": {
+                    "HP": 45,
+                    "攻撃": 60,
+                    "防御": 30,
+                    "特攻": 80,
+                    "特防": 50,
+                    "素早さ": 65
+                },
+                "rarity": 1,
+                "evolve_level": 24,
+                "evolves_to": "ヘルガー",
+                "appear": 0,
+                "moves": [
+                    "ひのこ",
+                    "かみつく"
+                ],
+                "shiny": false,
+                "level": 2,
+                "hp": 6,
+                "attack": 7,
+                "defense": 6,
+                "special_attack": 8,
+                "special_defense": 7,
+                "speed": 7,
+                "max_hp": 13,
                 "exp": 0
             }
         ],
