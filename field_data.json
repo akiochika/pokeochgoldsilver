@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "デルビル",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png",
+            "base_stats": {
+                "HP": 45,
+                "攻撃": 60,
+                "防御": 30,
+                "特攻": 80,
+                "特防": 50,
+                "素早さ": 65
+            },
+            "rarity": 1,
+            "evolve_level": 24,
+            "evolves_to": "ヘルガー",
+            "appear": 0,
+            "moves": [
+                "ひのこ",
+                "かみつく"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 11,
+            "attack": 6,
+            "defense": 5,
+            "special_attack": 6,
+            "special_defense": 6,
+            "speed": 6,
+            "max_hp": 11
+        },
         "user_ids": [
             "683595539807207434"
         ],
