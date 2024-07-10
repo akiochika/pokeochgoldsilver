@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "マリル",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png",
+            "base_stats": {
+                "HP": 70,
+                "攻撃": 20,
+                "防御": 50,
+                "特攻": 20,
+                "特防": 50,
+                "素早さ": 40
+            },
+            "rarity": 1,
+            "evolve_level": 18,
+            "evolves_to": "マリルリ",
+            "appear": 0,
+            "moves": [
+                "あわ",
+                "たいあたり"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 12,
+            "attack": 5,
+            "defense": 6,
+            "special_attack": 5,
+            "special_defense": 6,
+            "speed": 5,
+            "max_hp": 12
+        },
         "user_ids": [
             "683595539807207434"
         ],
