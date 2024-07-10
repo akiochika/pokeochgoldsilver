@@ -1,40 +1,38 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
+        "message_count": 10,
         "current_pokemon": {
-            "name": "ウリムー",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/220.png",
+            "name": "オタチ",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/161.png",
             "base_stats": {
-                "HP": 50,
-                "攻撃": 50,
-                "防御": 40,
-                "特攻": 30,
-                "特防": 30,
-                "素早さ": 50
+                "HP": 35,
+                "攻撃": 46,
+                "防御": 34,
+                "特攻": 35,
+                "特防": 45,
+                "素早さ": 20
             },
             "rarity": 1,
-            "evolve_level": 33,
-            "evolves_to": "イノムー",
+            "evolve_level": 15,
+            "evolves_to": "オオタチ",
             "appear": 0,
             "moves": [
-                "こなゆき",
-                "いわおとし"
+                "たいあたり",
+                "かみつく"
             ],
             "shiny": false,
-            "level": 3,
-            "hp": 16,
-            "attack": 8,
-            "defense": 7,
-            "special_attack": 6,
-            "special_defense": 6,
-            "speed": 8,
-            "max_hp": 16
+            "level": 1,
+            "hp": 11,
+            "attack": 5,
+            "defense": 5,
+            "special_attack": 5,
+            "special_defense": 5,
+            "speed": 5,
+            "max_hp": 11
         },
         "user_ids": [
             "683595539807207434"
         ],
-        "field_pokemons": {
-            "683595539807207434": []
-        }
+        "field_pokemons": {}
     }
 }
