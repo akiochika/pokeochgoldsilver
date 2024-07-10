@@ -414,7 +414,7 @@ def update_github_file(file_path, content):
             "sha": file_sha
         }
         response = requests.put(url, headers=headers, json=data)
-        if response.status_code == 200):
+        if response.status_code == 200:
             print(f"Successfully updated {file_path} on GitHub")
         else:
             print(f"Failed to update {file_path} on GitHub: {response.content}")
