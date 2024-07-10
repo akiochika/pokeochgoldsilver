@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "ウパー",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/194.png",
+            "base_stats": {
+                "HP": 55,
+                "攻撃": 45,
+                "防御": 45,
+                "特攻": 25,
+                "特防": 25,
+                "素早さ": 15
+            },
+            "rarity": 1,
+            "evolve_level": 20,
+            "evolves_to": "ヌオー",
+            "appear": 0,
+            "moves": [
+                "みずでっぽう",
+                "あわ"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 12,
+            "attack": 5,
+            "defense": 5,
+            "special_attack": 5,
+            "special_defense": 5,
+            "speed": 5,
+            "max_hp": 12
+        },
         "user_ids": [
             "683595539807207434"
         ],
