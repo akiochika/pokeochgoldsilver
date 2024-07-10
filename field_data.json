@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 5,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "ウリムー",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/220.png",
+            "base_stats": {
+                "HP": 50,
+                "攻撃": 50,
+                "防御": 40,
+                "特攻": 30,
+                "特防": 30,
+                "素早さ": 50
+            },
+            "rarity": 1,
+            "evolve_level": 33,
+            "evolves_to": "イノムー",
+            "appear": 0,
+            "moves": [
+                "こなゆき",
+                "いわおとし"
+            ],
+            "shiny": false,
+            "level": 3,
+            "hp": 16,
+            "attack": 8,
+            "defense": 7,
+            "special_attack": 6,
+            "special_defense": 6,
+            "speed": 8,
+            "max_hp": 16
+        },
         "user_ids": [
             "683595539807207434"
         ],
