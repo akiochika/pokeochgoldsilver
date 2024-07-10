@@ -982,6 +982,8 @@ async def catch(ctx, pokemon_name: str):
                 channel_info["current_pokemon"] = None
                 if "wild_pokemon_escape_task" in channel_info and channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                     channel_info["wild_pokemon_escape_task"].cancel()
+                if "wild_pokemon_attack_task" in channel_info and channel_info["wild_pokemon_attack_task"] and not channel_info["wild_pokemon_attack_task"].done():
+                    channel_info["wild_pokemon_attack_task"].cancel()
 
                 for user_id in channel_info["user_ids"]:
                     channel_info["field_pokemons"][user_id] = []
