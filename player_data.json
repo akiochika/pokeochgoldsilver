@@ -24,7 +24,7 @@
                 "shiny": false,
                 "level": 5,
                 "exp": 0,
-                "hp": 0,
+                "hp": 12,
                 "attack": 11,
                 "defense": 11,
                 "special_attack": 9,
@@ -33,33 +33,34 @@
                 "max_hp": 20
             },
             {
-                "name": "ワニノコ",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png",
+                "name": "デルビル",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png",
                 "base_stats": {
-                    "HP": 50,
-                    "攻撃": 65,
-                    "防御": 64,
-                    "特攻": 44,
-                    "特防": 48,
-                    "素早さ": 43
+                    "HP": 45,
+                    "攻撃": 60,
+                    "防御": 30,
+                    "特攻": 80,
+                    "特防": 50,
+                    "素早さ": 65
                 },
                 "rarity": 1,
-                "evolve_level": 18,
-                "evolves_to": "アリゲイツ",
-                "appear": 1,
+                "evolve_level": 24,
+                "evolves_to": "ヘルガー",
+                "appear": 0,
                 "moves": [
-                    "たいあたり"
+                    "ひのこ",
+                    "かみつく"
                 ],
                 "shiny": false,
-                "level": 5,
-                "exp": 0,
-                "hp": 0,
-                "attack": 11,
-                "defense": 11,
-                "special_attack": 9,
-                "special_defense": 9,
-                "speed": 9,
-                "max_hp": 20
+                "level": 2,
+                "hp": 6,
+                "attack": 7,
+                "defense": 6,
+                "special_attack": 8,
+                "special_defense": 7,
+                "speed": 7,
+                "max_hp": 13,
+                "exp": 0
             }
         ],
         "box": [
@@ -91,36 +92,6 @@
                 "special_defense": 6,
                 "speed": 6,
                 "max_hp": 11,
-                "exp": 0
-            },
-            {
-                "name": "デルビル",
-                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/228.png",
-                "base_stats": {
-                    "HP": 45,
-                    "攻撃": 60,
-                    "防御": 30,
-                    "特攻": 80,
-                    "特防": 50,
-                    "素早さ": 65
-                },
-                "rarity": 1,
-                "evolve_level": 24,
-                "evolves_to": "ヘルガー",
-                "appear": 0,
-                "moves": [
-                    "ひのこ",
-                    "かみつく"
-                ],
-                "shiny": false,
-                "level": 2,
-                "hp": 6,
-                "attack": 7,
-                "defense": 6,
-                "special_attack": 8,
-                "special_defense": 7,
-                "speed": 7,
-                "max_hp": 13,
                 "exp": 0
             }
         ],
