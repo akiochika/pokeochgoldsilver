@@ -7,7 +7,7 @@ import asyncio
 from datetime import timedelta
 import base64
 import requests
-from skilllist import get_skill_damage  # Ensure this is correctly imported
+from skilllist import get_skill_damage
 from threading import Thread
 from flask import Flask
 import logging
@@ -35,7 +35,7 @@ field_data_file = 'field_data.json'
 caught_pokemons = {}
 player_data = {}
 
-# Load data
+# データの読み込み
 if os.path.exists(data_file):
     with open(data_file, 'r') as file:
         caught_pokemons = json.load(file)
@@ -48,7 +48,7 @@ if os.path.exists(field_data_file):
     with open(field_data_file, 'r') as file:
         channel_data = json.load(file)
 
-# Fix Pokémon levels over 100
+# レベル100を超えるポケモンの修正
 def fix_pokemon_level():
     for user_id, data in player_data.items():
         for pokemon in data["team"]:
@@ -66,7 +66,7 @@ def fix_pokemon_level():
 
 fix_pokemon_level()
 
-# Initialize message count threshold
+# メッセージカウントの初期値
 spawn_threshold = 10
 
 rarity_to_timeout = {
@@ -574,7 +574,7 @@ async def box_next(ctx):
 async def box_back(ctx):
     try:
         user_id = str(ctx.author.id)
-        if user_id in pages and pages[user_id]["embeds"]:
+        if user_id in pages and pages[user_id]["embeds"]):
             pages[user_id]["current_page"] -= 1
             if pages[user_id]["current_page"] < 0:
                 pages[user_id]["current_page"] = len(pages[user_id]["embeds"]) - 1
