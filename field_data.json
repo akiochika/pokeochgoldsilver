@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "クヌギダマ",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+            "base_stats": {
+                "HP": 50,
+                "攻撃": 65,
+                "防御": 90,
+                "特攻": 35,
+                "特防": 35,
+                "素早さ": 15
+            },
+            "rarity": 1,
+            "evolve_level": 31,
+            "evolves_to": "フォレトス",
+            "appear": 0,
+            "moves": [
+                "とっしん",
+                "てっぺき"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 12,
+            "attack": 6,
+            "defense": 6,
+            "special_attack": 5,
+            "special_defense": 5,
+            "speed": 5,
+            "max_hp": 12
+        },
         "user_ids": [
             "683595539807207434"
         ],
