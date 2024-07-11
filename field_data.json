@@ -2,39 +2,37 @@
     "1259536785579573289": {
         "message_count": 10,
         "current_pokemon": {
-            "name": "クヌギダマ",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/204.png",
+            "name": "ハリーセン",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/211.png",
             "base_stats": {
-                "HP": 50,
-                "攻撃": 65,
-                "防御": 90,
-                "特攻": 35,
-                "特防": 35,
-                "素早さ": 15
+                "HP": 65,
+                "攻撃": 95,
+                "防御": 85,
+                "特攻": 55,
+                "特防": 55,
+                "素早さ": 85
             },
             "rarity": 1,
-            "evolve_level": 31,
-            "evolves_to": "フォレトス",
+            "evolve_level": null,
+            "evolves_to": "ハリーマン",
             "appear": 0,
             "moves": [
-                "とっしん",
-                "てっぺき"
+                "どくばり",
+                "アクアジェット"
             ],
             "shiny": false,
             "level": 1,
             "hp": 12,
             "attack": 6,
             "defense": 6,
-            "special_attack": 5,
-            "special_defense": 5,
-            "speed": 5,
+            "special_attack": 6,
+            "special_defense": 6,
+            "speed": 6,
             "max_hp": 12
         },
         "user_ids": [
             "683595539807207434"
         ],
-        "field_pokemons": {
-            "683595539807207434": []
-        }
+        "field_pokemons": {}
     }
 }
