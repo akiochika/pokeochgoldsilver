@@ -1,7 +1,35 @@
 {
     "1259536785579573289": {
-        "message_count": 0,
-        "current_pokemon": null,
+        "message_count": 10,
+        "current_pokemon": {
+            "name": "ブルー",
+            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/209.png",
+            "base_stats": {
+                "HP": 60,
+                "攻撃": 80,
+                "防御": 50,
+                "特攻": 40,
+                "特防": 40,
+                "素早さ": 30
+            },
+            "rarity": 1,
+            "evolve_level": 23,
+            "evolves_to": "グランブル",
+            "appear": 0,
+            "moves": [
+                "かみつく",
+                "はたく"
+            ],
+            "shiny": false,
+            "level": 1,
+            "hp": 12,
+            "attack": 6,
+            "defense": 6,
+            "special_attack": 5,
+            "special_defense": 5,
+            "speed": 5,
+            "max_hp": 12
+        },
         "user_ids": [
             "683595539807207434"
         ],
