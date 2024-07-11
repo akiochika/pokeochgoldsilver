@@ -1,70 +1,12 @@
 {
     "1259536785579573289": {
         "message_count": 0,
-        "current_pokemon": {
-            "name": "キリンリキ",
-            "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/203.png",
-            "base_stats": {
-                "HP": 70,
-                "攻撃": 80,
-                "防御": 65,
-                "特攻": 90,
-                "特防": 65,
-                "素早さ": 85
-            },
-            "rarity": 1,
-            "evolve_level": null,
-            "evolves_to": "リキキリン",
-            "appear": 0,
-            "moves": [
-                "ねんりき",
-                "かみつく"
-            ],
-            "shiny": false,
-            "level": 1,
-            "hp": 5,
-            "attack": 6,
-            "defense": 6,
-            "special_attack": 6,
-            "special_defense": 6,
-            "speed": 6,
-            "max_hp": 12
-        },
+        "current_pokemon": null,
         "user_ids": [
             "683595539807207434"
         ],
         "field_pokemons": {
-            "683595539807207434": [
-                {
-                    "name": "ワニノコ",
-                    "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/158.png",
-                    "base_stats": {
-                        "HP": 50,
-                        "攻撃": 65,
-                        "防御": 64,
-                        "特攻": 44,
-                        "特防": 48,
-                        "素早さ": 43
-                    },
-                    "rarity": 1,
-                    "evolve_level": 18,
-                    "evolves_to": "アリゲイツ",
-                    "appear": 1,
-                    "moves": [
-                        "たいあたり"
-                    ],
-                    "shiny": false,
-                    "level": 5,
-                    "exp": 0,
-                    "hp": 20,
-                    "attack": 11,
-                    "defense": 11,
-                    "special_attack": 9,
-                    "special_defense": 9,
-                    "speed": 9,
-                    "max_hp": 20
-                }
-            ]
+            "683595539807207434": []
         }
     }
 }
