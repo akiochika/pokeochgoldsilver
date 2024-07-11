@@ -8,11 +8,10 @@ from datetime import timedelta
 import base64
 import requests
 from skilllist import get_skill_damage
-from threading import Thread
 from flask import Flask
 import logging
 
-app = Flask('')
+app = Flask(__name__)
 
 @app.route('/')
 def home():
@@ -36,28 +35,20 @@ caught_pokemons = {}
 player_data = {}
 
 # データの読み込み
-if os.path.exists(data_file):
-    with open(data_file, 'r') as file:
-        caught_pokemons = json.load(file)
+def load_data(file_path):
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as file:
+            return json.load(file)
+    return {}
 
-if os.path.exists(player_data_file):
-    with open(player_data_file, 'r') as file:
-        player_data = json.load(file)
-
-if os.path.exists(field_data_file):
-    with open(field_data_file, 'r') as file:
-        channel_data = json.load(file)
+caught_pokemons = load_data(data_file)
+player_data = load_data(player_data_file)
+channel_data = load_data(field_data_file)
 
 # レベル100を超えるポケモンの修正
 def fix_pokemon_level():
     for user_id, data in player_data.items():
-        for pokemon in data["team"]:
-            if pokemon["level"] > 100:
-                pokemon["level"] = 100
-                pokemon["exp"] = 0
-                pokemon.update(calculate_pokemon_level(pokemon["base_stats"], 100))
-                pokemon["max_hp"] = pokemon["hp"]
-        for pokemon in data["box"]:
+        for pokemon in data["team"] + data["box"]:
             if pokemon["level"] > 100:
                 pokemon["level"] = 100
                 pokemon["exp"] = 0
@@ -216,15 +207,13 @@ async def spawn_pokemon(channel, user_ids):
     channel_info["current_pokemon"].update(stats)
     channel_info["current_pokemon"]["max_hp"] = channel_info["current_pokemon"]["hp"]
 
-    wild_pokemon_timeout = rarity_to_timeout[channel_info["current_pokemon"]["rarity"]]
-
     hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
     embed = discord.Embed(title=f"野生の{'色違い ' if channel_info['current_pokemon']['shiny'] else ''}{channel_info['current_pokemon']['name']}が現れた！ レベル: {channel_info['current_pokemon']['level']}")
     embed.set_image(url=channel_info["current_pokemon"]["image"])
     embed.add_field(name="HP", value=hp_bar, inline=False)
     channel_info["current_pokemon"]["message"] = await channel.send(embed=embed)
 
-    if "wild_pokemon_escape_task" in channel_info and channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
+    if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
         channel_info["wild_pokemon_escape_task"].cancel()
 
     channel_info["wild_pokemon_escape_task"] = bot.loop.create_task(wild_pokemon_escape(channel))
@@ -282,7 +271,7 @@ async def wild_pokemon_attack(channel):
             hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
             skills = ', '.join(target_pokemon.get("moves", ["なし"]))
 
-            if "message" in target_pokemon and target_pokemon["message"]:
+            if target_pokemon.get("message"):
                 try:
                     await target_pokemon["message"].delete()
                 except discord.errors.NotFound:
@@ -354,21 +343,16 @@ def github_write_file(content, file_path, message):
         }
 
         response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            sha = response.json()['sha']
-        else:
-            sha = None
+        sha = response.json().get('sha') if response.status_code == 200 else None
 
         content = base64.b64encode(content.encode()).decode()
 
         data = {
             'message': message,
             'content': content,
-            'branch': GITHUB_BRANCH
+            'branch': GITHUB_BRANCH,
+            'sha': sha
         }
-
-        if sha:
-            data['sha'] = sha
 
         response = requests.put(url, headers=headers, json=data)
         if response.status_code in [200, 201]:
@@ -392,7 +376,7 @@ def get_file_sha(file_path):
             "Accept": "application/vnd.github.v3+json"
         }
         response = requests.get(url, headers=headers)
-        if (response.status_code == 200) and ("sha" in response.json()):
+        if response.status_code == 200 and "sha" in response.json():
             return response.json()["sha"]
         return None
     except Exception as e:
@@ -420,34 +404,28 @@ def update_github_file(file_path, content):
     except Exception as e:
         logging.error(f"Error in update_github_file: {e}", exc_info=True)
 
+def save_data(file_path, data, github_path):
+    try:
+        data_json = json.dumps(data, ensure_ascii=False, indent=4)
+        with open(file_path, 'w') as file:
+            file.write(data_json)
+        update_github_file(github_path, data_json)
+    except Exception as e:
+        logging.error(f"Error in save_data: {e}", exc_info=True)
+
 def save_player_data():
     try:
         for user_id in player_data:
-            for pokemon in player_data[user_id]["team"]:
-                if "message" in pokemon:
-                    del pokemon["message"]
-            for pokemon in player_data[user_id]["box"]:
-                if "message" in pokemon:
-                    del pokemon["message"]
-            for pokemon in player_data[user_id]["field"]:
-                if "message" in pokemon:
-                    del pokemon["message"]
+            for pokemon in player_data[user_id]["team"] + player_data[user_id]["box"] + player_data[user_id]["field"]:
+                pokemon.pop("message", None)
 
-        player_data_json = json.dumps(player_data, ensure_ascii=False, indent=4)
-        with open(player_data_file, 'w') as file:
-            file.write(player_data_json)
-        
-        update_github_file(PLAYER_DATA_FILE_PATH, player_data_json)
+        save_data(player_data_file, player_data, PLAYER_DATA_FILE_PATH)
     except Exception as e:
         logging.error(f"Error in save_player_data: {e}", exc_info=True)
 
 def save_caught_pokemons():
     try:
-        caught_pokemons_json = json.dumps(caught_pokemons, ensure_ascii=False, indent=4)
-        with open(data_file, 'w') as file:
-            file.write(caught_pokemons_json)
-        
-        update_github_file(CAUGHT_POKEMONS_FILE_PATH, caught_pokemons_json)
+        save_data(data_file, caught_pokemons, CAUGHT_POKEMONS_FILE_PATH)
     except Exception as e:
         logging.error(f"Error in save_caught_pokemons: {e}", exc_info=True)
 
@@ -457,21 +435,15 @@ def clean_channel_data(data):
         cleaned_channel_info = channel_info.copy()
         if cleaned_channel_info["current_pokemon"]:
             cleaned_channel_info["current_pokemon"] = cleaned_channel_info["current_pokemon"].copy()
-            if "message" in cleaned_channel_info["current_pokemon"]:
-                del cleaned_channel_info["current_pokemon"]["message"]
-        if "wild_pokemon_escape_task" in cleaned_channel_info:
-            del cleaned_channel_info["wild_pokemon_escape_task"]
-        if "wild_pokemon_attack_task" in cleaned_channel_info:
-            del cleaned_channel_info["wild_pokemon_attack_task"]
+            cleaned_channel_info["current_pokemon"].pop("message", None)
+        cleaned_channel_info.pop("wild_pokemon_escape_task", None)
+        cleaned_channel_info.pop("wild_pokemon_attack_task", None)
 
         field_pokemons = {}
         for user_id, pokemons in channel_info["field_pokemons"].items():
-            field_pokemons[user_id] = []
-            for pokemon in pokemons:
-                cleaned_pokemon = pokemon.copy()
-                if "message" in cleaned_pokemon:
-                    del cleaned_pokemon["message"]
-                field_pokemons[user_id].append(cleaned_pokemon)
+            field_pokemons[user_id] = [pokemon.copy() for pokemon in pokemons]
+            for pokemon in field_pokemons[user_id]:
+                pokemon.pop("message", None)
         cleaned_channel_info["field_pokemons"] = field_pokemons
 
         cleaned_data[channel_id] = cleaned_channel_info
@@ -480,20 +452,14 @@ def clean_channel_data(data):
 def save_field_data():
     try:
         cleaned_data = clean_channel_data(channel_data)
-        field_data_json = json.dumps(cleaned_data, ensure_ascii=False, indent=4)
-        with open(field_data_file, 'w') as file:
-            file.write(field_data_json)
-
-        update_github_file(FIELD_DATA_FILE_PATH, field_data_json)
+        save_data(field_data_file, cleaned_data, FIELD_DATA_FILE_PATH)
     except Exception as e:
         logging.error(f"Error in save_field_data: {e}", exc_info=True)
 
 def load_field_data():
     try:
         global channel_data
-        if os.path.exists(field_data_file):
-            with open(field_data_file, 'r') as file:
-                channel_data = json.load(file)
+        channel_data = load_data(field_data_file)
     except Exception as e:
         logging.error(f"Error in load_field_data: {e}", exc_info=True)
 
@@ -607,7 +573,7 @@ async def deposit(ctx, pokemon_name: str):
 
         await ctx.send(f"{ctx.author.mention} {pokemon_name} は手持ちにいません。")
     except Exception as e:
-        logging.error(f"Error in deposit command: {e}", excinfo=True)
+        logging.error(f"Error in deposit command: {e}", exc_info=True)
 
 @bot.command()
 async def withdraw(ctx, pokemon_name: str):
@@ -796,7 +762,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
             hp_bar = create_hp_bar(channel_info["current_pokemon"]["hp"], channel_info["current_pokemon"]["max_hp"])
 
             if channel_info["current_pokemon"]["hp"] == 0:
-                if "message" in channel_info["current_pokemon"] and channel_info["current_pokemon"]["message"]:
+                if channel_info["current_pokemon"].get("message"):
                     try:
                         await channel_info["current_pokemon"]["message"].delete()
                     except discord.errors.NotFound:
@@ -810,7 +776,7 @@ async def skill(ctx, skill_name: str, target_name: str = None):
                 save_player_data()
                 save_field_data()
             else:
-                if "message" in channel_info["current_pokemon"] and channel_info["current_pokemon"]["message"]:
+                if channel_info["current_pokemon"].get("message"):
                     try:
                         await channel_info["current_pokemon"]["message"].delete()
                     except discord.errors.NotFound:
@@ -960,28 +926,19 @@ async def catch(ctx, pokemon_name: str):
                     player_data[user_id]["box"].append(current_pokemon_copy)
                 caught_pokemons[user_id].append(current_pokemon_copy)
 
-                for pokemon in caught_pokemons[user_id]:
-                    if "message" in pokemon:
-                        del pokemon["message"]
-                for pokemon in player_data[user_id]["team"]:
-                    if "message" in pokemon:
-                        del pokemon["message"]
-                for pokemon in player_data[user_id]["box"]:
-                    if "message" in pokemon:
-                        del pokemon["message"]
+                for pokemon in caught_pokemons[user_id] + player_data[user_id]["team"] + player_data[user_id]["box"]:
+                    pokemon.pop("message", None)
 
-                with open(data_file, 'w') as file:
-                    json.dump(caught_pokemons, file, ensure_ascii=False, indent=4)
-                with open(player_data_file, 'w') as file:
-                    json.dump(player_data, file, ensure_ascii=False, indent=4)
+                save_caught_pokemons()
+                save_player_data()
 
                 await channel_info["current_pokemon"]["message"].delete()
                 await ctx.send(f'{ctx.author.mention} が {"色違い " if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
                 await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])
                 channel_info["current_pokemon"] = None
-                if "wild_pokemon_escape_task" in channel_info and channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
+                if channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                     channel_info["wild_pokemon_escape_task"].cancel()
-                if "wild_pokemon_attack_task" in channel_info and channel_info["wild_pokemon_attack_task"] and not channel_info["wild_pokemon_attack_task"].done():
+                if channel_info["wild_pokemon_attack_task"] and not channel_info["wild_pokemon_attack_task"].done():
                     channel_info["wild_pokemon_attack_task"].cancel()
 
                 for user_id in channel_info["user_ids"]:
@@ -1004,8 +961,7 @@ async def reset(ctx, member: discord.Member):
         if user_id in caught_pokemons:
             del caught_pokemons[user_id]
 
-            with open(data_file, 'w') as file:
-                json.dump(caught_pokemons, file, ensure_ascii=False, indent=4)
+            save_caught_pokemons()
 
             await ctx.send(f'{member.mention} の所持ポケモンをリセットしました。')
         else:
@@ -1107,7 +1063,7 @@ async def periodic_save_field_data():
 
 async def main():
     async with bot:
-        Thread(target=run_flask).start()
+        bot.loop.create_task(asyncio.to_thread(run_flask))
         bot.loop.create_task(periodic_save_field_data())
         await bot.start(os.getenv('DISCORD_TOKEN'))
 
