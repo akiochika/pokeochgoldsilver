@@ -1,6 +1,6 @@
 {
     "683595539807207434": {
-        "level": 1,
+        "level": 2,
         "exp": 0,
         "team": [
             {
@@ -31,6 +31,36 @@
                 "special_defense": 9,
                 "speed": 9,
                 "max_hp": 20
+            },
+            {
+                "name": "エイパム",
+                "image": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/190.png",
+                "base_stats": {
+                    "HP": 55,
+                    "攻撃": 70,
+                    "防御": 55,
+                    "特攻": 40,
+                    "特防": 55,
+                    "素早さ": 85
+                },
+                "rarity": 1,
+                "evolve_level": 32,
+                "evolves_to": "エテボース",
+                "appear": 0,
+                "moves": [
+                    "ひっかく",
+                    "はたく"
+                ],
+                "shiny": false,
+                "level": 1,
+                "hp": 5,
+                "attack": 6,
+                "defense": 6,
+                "special_attack": 5,
+                "special_defense": 6,
+                "speed": 6,
+                "max_hp": 12,
+                "exp": 0
             }
         ],
         "box": [],
