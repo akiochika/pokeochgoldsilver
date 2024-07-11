@@ -115,7 +115,6 @@ def get_average_player_team_level(user_ids):
             team_levels = [pokemon["level"] for pokemon in player_data[user_id]["team"]]
             if team_levels:
                 player_levels.extend(team_levels)
-    # Fill empty slots with 0 for averaging
     while len(player_levels) < 3:
         player_levels.append(0)
     return sum(player_levels) // len(player_levels) if player_levels else 1
@@ -277,7 +276,7 @@ async def wild_pokemon_attack(channel):
                 continue
             target_pokemon = random.choice(channel_info["field_pokemons"][target_user_id])
             if attacker.get("attack") is None or target_pokemon.get("defense") is None:
-                continue  # Skip if stats are None
+                continue
             damage = get_skill_damage(move, attacker, target_pokemon)
             target_pokemon["hp"] = max(0, target_pokemon["hp"] - damage)
             hp_bar = create_hp_bar(target_pokemon["hp"], target_pokemon["max_hp"])
@@ -302,7 +301,6 @@ async def wild_pokemon_attack(channel):
                 player_data[target_user_id]["team"].append(target_pokemon)
                 save_player_data()
                 save_field_data()
-                break  # Stop attacking if the target Pokemon faints
     except Exception as e:
         logging.error(f"Error in wild_pokemon_attack: {e}", exc_info=True)
 
@@ -972,12 +970,19 @@ async def catch(ctx, pokemon_name: str):
                     if "message" in pokemon:
                         del pokemon["message"]
 
+                with open(data_file, 'w') as file:
+                    json.dump(caught_pokemons, file, ensure_ascii=False, indent=4)
+                with open(player_data_file, 'w') as file:
+                    json.dump(player_data, file, ensure_ascii=False, indent=4)
+
                 await channel_info["current_pokemon"]["message"].delete()
                 await ctx.send(f'{ctx.author.mention} が {"色違い " if channel_info["current_pokemon"]["shiny"] else ""}{channel_info["current_pokemon"]["name"]} を捕まえた！')
                 await give_exp_on_catch(ctx, channel_info["current_pokemon"]["level"])
                 channel_info["current_pokemon"] = None
                 if "wild_pokemon_escape_task" in channel_info and channel_info["wild_pokemon_escape_task"] and not channel_info["wild_pokemon_escape_task"].done():
                     channel_info["wild_pokemon_escape_task"].cancel()
+                if "wild_pokemon_attack_task" in channel_info and channel_info["wild_pokemon_attack_task"] and not channel_info["wild_pokemon_attack_task"].done():
+                    channel_info["wild_pokemon_attack_task"].cancel()
 
                 for user_id in channel_info["user_ids"]:
                     channel_info["field_pokemons"][user_id] = []
