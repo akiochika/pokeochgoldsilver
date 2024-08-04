@@ -250,7 +250,7 @@ async def start(ctx):
     if user_id not in player_data:
         player_data[user_id] = {"level": 1, "exp": 0, "team": [], "box": [], "field": []}
         save_player_data()
-        await ctx.send(f'{ctx.author.mention} の冒険が始まった！ ポケモンを選んでください: !choose フシギダネ, !choose ヒトカゲ, !choose ゼニガメ')
+        await ctx.send(f'{ctx.author.mention} の冒険が始まった！ ポケモンを選んでください: !choose チコリータ, !choose ヒノアラシ, !choose ワニノコ')
     else:
         await ctx.send(f'{ctx.author.mention} は既に冒険を始めています。')
 
@@ -258,7 +258,8 @@ async def start(ctx):
 async def choose(ctx, pokemon_name: str):
     user_id = str(ctx.author.id)
     if user_id in player_data and len(player_data[user_id]["team"]) == 0:
-        starter_pokemon = next((pokemon for pokemon in pokemon_list if pokemon["name"] == pokemon_name and not pokemon.get("shiny")), None)
+        # チコリータ、ヒノアラシ、ワニノコの選択肢を追加
+        starter_pokemon = next((pokemon for pokemon in pokemon_list if pokemon["name"] == pokemon_name and not pokemon.get("shiny") and pokemon_name in ["チコリータ", "ヒノアラシ", "ワニノコ"]), None)
         if starter_pokemon:
             starter_pokemon = starter_pokemon.copy()
             starter_pokemon["level"] = 5
